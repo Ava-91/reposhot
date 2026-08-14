@@ -55,6 +55,11 @@ export default function RepositoryPreview({
 
   const theme = themes[themeName];
   const layout = layouts[layoutName];
+  const visibleTopics = repository.topics.slice(0, 4);
+  const remainingTopicCount = Math.max(
+    repository.topics.length - visibleTopics.length,
+    0,
+  );
 
   async function handleDownload() {
     if (!previewRef.current || downloading) {
@@ -214,6 +219,37 @@ export default function RepositoryPreview({
                   >
                     {repository.description || "No description provided."}
                   </p>
+                )}
+
+                {repository.topics.length > 0 && (
+                  <div className="mt-3 flex min-w-0 flex-wrap items-center gap-1.5 overflow-hidden">
+                    {visibleTopics.map((topic) => (
+                      <span
+                        key={topic}
+                        className="max-w-28 truncate rounded-full px-2 py-1 text-[8px] font-medium sm:max-w-36 sm:text-[9px]"
+                        style={{
+                          background: theme.badge,
+                          border: `1px solid ${theme.border}`,
+                          color: theme.badgeText,
+                        }}
+                      >
+                        {topic}
+                      </span>
+                    ))}
+
+                    {remainingTopicCount > 0 && (
+                      <span
+                        className="shrink-0 rounded-full px-2 py-1 text-[8px] font-medium sm:text-[9px]"
+                        style={{
+                          background: theme.badge,
+                          border: `1px solid ${theme.border}`,
+                          color: theme.subtle,
+                        }}
+                      >
+                        +{remainingTopicCount}
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
