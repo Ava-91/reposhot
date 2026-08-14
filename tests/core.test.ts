@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { parseGitHubRepositoryUrl } from "../lib/github-url.ts";
-import { mapGitHubRepository } from "../lib/repository-mapper.ts";
-import { createExportOptions } from "../lib/export-options.ts";
+import { parseGitHubRepositoryUrl } from "../lib/github-url";
+import { mapGitHubRepository } from "../lib/repository-mapper";
+import { createExportOptions } from "../lib/export-options";
 
 test("parses a valid GitHub repository URL", () => {
   assert.deepEqual(parseGitHubRepositoryUrl(" https://github.com/Ava-91/reposhot "), {
@@ -61,6 +61,7 @@ test("handles missing optional repository metadata", () => {
     html_url: "https://github.com/Ava-91/minimal",
     homepage: null,
     language: null,
+    topics: [],
     stargazers_count: 0,
     forks_count: 0,
     subscribers_count: 0,
