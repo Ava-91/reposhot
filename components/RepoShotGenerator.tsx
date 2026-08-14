@@ -62,16 +62,15 @@ export default function RepoShotGenerator() {
       return;
     }
 
-    // Defer state hydration so the effect only synchronizes with the URL.
+    // Defer preset hydration and repository loading until after the effect returns.
     queueMicrotask(() => {
       setTheme(preset.theme);
       setLayout(preset.layout);
       setTemplate(preset.template);
       setMetadata(preset.metadata);
+      void handleRepositorySubmit({ owner: preset.owner, repo: preset.repo });
+      window.history.replaceState(null, "", window.location.pathname);
     });
-
-    void handleRepositorySubmit({ owner: preset.owner, repo: preset.repo });
-    window.history.replaceState(null, "", window.location.pathname);
   }, []);
 
   function handleRetry() {
