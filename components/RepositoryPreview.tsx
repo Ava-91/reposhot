@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { MetadataVisibility } from "@/components/MetadataControls";
 import { RepositoryData } from "@/lib/github";
 import { downloadElementAsPng } from "@/lib/export";
+import { createExportOptions } from "@/lib/export-options";
 import { layouts, LayoutName } from "@/lib/layouts";
 import { themes, ThemeName } from "@/lib/themes";
 
@@ -44,11 +45,15 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
     setDownloadError("");
 
     try {
-      await downloadElementAsPng(previewRef.current, {
-        width: layout.width,
-        height: layout.height,
-        filename: `reposhot-${repository.owner.login}-${repository.name}.png`,
-      });
+      await downloadElementAsPng(
+        previewRef.current,
+        createExportOptions(
+          layout.width,
+          layout.height,
+          repository.owner.login,
+          repository.name,
+        ),
+      );
     } catch {
       setDownloadError("Couldn't generate the image. Please try again.");
     } finally {
