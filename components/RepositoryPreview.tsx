@@ -103,7 +103,6 @@ export default function RepositoryPreview({
             color: theme.foreground,
           }}
         >
-          {/* Background grid */}
           <div
             aria-hidden="true"
             className="absolute inset-0 opacity-70"
@@ -113,7 +112,6 @@ export default function RepositoryPreview({
             }}
           />
 
-          {/* Primary glow */}
           <div
             aria-hidden="true"
             className="absolute -right-24 -top-32 h-96 w-96 rounded-full blur-3xl"
@@ -122,7 +120,6 @@ export default function RepositoryPreview({
             }}
           />
 
-          {/* Secondary glow */}
           <div
             aria-hidden="true"
             className="absolute -bottom-40 left-1/4 h-80 w-80 rounded-full blur-3xl"
@@ -132,7 +129,6 @@ export default function RepositoryPreview({
           />
 
           <div className="relative flex h-full min-w-0 flex-col justify-center p-[5.5%]">
-            {/* Header */}
             <div className="flex min-w-0 items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">
                 <div
@@ -175,8 +171,7 @@ export default function RepositoryPreview({
               </div>
             </div>
 
-            {/* Repository identity */}
-            <div className="mt-[6%] grid min-h-0 flex-1 grid-cols-[auto_minmax(0,1fr)] gap-4 sm:gap-6">
+            <div className="mt-[6%] grid min-h-0 grid-cols-[auto_minmax(0,1fr)] gap-4 sm:gap-6">
               <Image
                 src={repository.owner.avatarUrl}
                 alt={`${repository.owner.login}'s avatar`}
@@ -212,7 +207,6 @@ export default function RepositoryPreview({
               </div>
             </div>
 
-            {/* Statistics */}
             <div className="mt-[4%] grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {repository.language && (
                 <div
@@ -310,7 +304,6 @@ export default function RepositoryPreview({
               </div>
             </div>
 
-            {/* Footer */}
             <div
               className="mt-3 flex min-w-0 items-center justify-between gap-3 border-t pt-3"
               style={{
@@ -350,7 +343,6 @@ export default function RepositoryPreview({
         </div>
       </div>
 
-      {/* Export controls */}
       <div className="mt-5 flex flex-col items-center gap-3">
         <button
           type="button"
