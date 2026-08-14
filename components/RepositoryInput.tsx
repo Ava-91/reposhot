@@ -43,20 +43,20 @@ export default function RepositoryInput({
   }
 
   return (
-    <section className="w-full max-w-2xl">
+    <section className="reposhot-fade-up reposhot-fade-up-delay w-full max-w-2xl">
       <form onSubmit={handleSubmit} aria-busy={disabled}>
         <div
-          className={`rounded-2xl border bg-white/4 p-2 shadow-2xl shadow-black/20 backdrop-blur-xl transition ${
+          className={`rounded-2xl border bg-white/4 p-2 shadow-2xl shadow-black/20 backdrop-blur-xl transition duration-200 ${
             error
               ? "border-red-400/40"
-              : "border-white/10 focus-within:border-blue-400/40"
+              : "border-white/10 focus-within:border-blue-400/40 hover:border-white/15"
           }`}
         >
           <div className="flex flex-col gap-2 sm:flex-row">
-            <label className="flex min-h-12 flex-1 items-center rounded-xl border border-white/5 bg-black/20 px-4 text-left">
+            <label className="flex min-h-12 flex-1 items-center rounded-xl border border-white/5 bg-black/20 px-4 text-left transition-colors duration-200 focus-within:border-white/10">
               <svg
                 aria-hidden="true"
-                className="mr-3 h-5 w-5 shrink-0 text-zinc-500"
+                className="mr-3 h-5 w-5 shrink-0 text-zinc-500 transition-colors duration-200 group-focus-within:text-blue-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -85,7 +85,7 @@ export default function RepositoryInput({
             <button
               type="submit"
               disabled={disabled}
-              className="min-h-12 rounded-xl bg-blue-500 px-6 text-sm font-semibold text-white transition hover:bg-blue-400 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 disabled:cursor-not-allowed disabled:opacity-60 sm:shrink-0"
+              className="min-h-12 rounded-xl bg-blue-500 px-6 text-sm font-semibold text-white transition duration-200 hover:-translate-y-px hover:bg-blue-400 hover:shadow-lg hover:shadow-blue-500/20 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none sm:shrink-0"
             >
               {disabled ? "Generating..." : "Generate Shot"}
             </button>

@@ -33,6 +33,7 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
   const previewRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
+  const [downloadComplete, setDownloadComplete] = useState(false);
   const theme = themes[themeName];
   const layout = layouts[layoutName];
   const template = templates[templateName];
@@ -44,8 +45,12 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
 
   async function handleDownload() {
     if (!previewRef.current || downloading) return;
-    setDownloading(true); setDownloadError("");
-    try { await downloadElementAsPng(previewRef.current, createExportOptions(layout.width, layout.height, repository.owner.login, repository.name)); }
+    setDownloading(true); setDownloadError(""); setDownloadComplete(false);
+    try {
+      await downloadElementAsPng(previewRef.current, createExportOptions(layout.width, layout.height, repository.owner.login, repository.name));
+      setDownloadComplete(true);
+      window.setTimeout(() => setDownloadComplete(false), 2500);
+    }
     catch { setDownloadError("Couldn't generate the image. Please try again."); }
     finally { setDownloading(false); }
   }
@@ -58,10 +63,10 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
     metadata.openIssues ? { label: "Open issues", value: formatNumber(repository.openIssues) } : null,
   ].filter(Boolean) as Array<{ label: string; value: string; language?: boolean }>;
 
-  return <div className="w-full" aria-label="RepoShot preview and export">
+  return <div className="reposhot-fade-up w-full" aria-label="RepoShot preview and export">
     <div className="mb-4"><TemplateSelector value={templateName} onChange={onTemplateChange} /></div>
     <div className="mb-4 flex justify-end px-1"><span className="rounded-full border border-white/10 bg-white/3 px-3 py-1 text-xs text-zinc-500">{template.label} · {layout.width} × {layout.height}</span></div>
-    <div className="w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40">
+    <div className="w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 transition duration-300 hover:border-white/15 hover:shadow-black/50">
       <div ref={previewRef} className="relative w-full overflow-hidden" style={{ aspectRatio: layout.aspectRatio, background: theme.backgroundGradient, color: theme.foreground }}>
         <div aria-hidden="true" className="absolute inset-0 opacity-70" style={{ backgroundImage: theme.grid, backgroundSize: "32px 32px" }} />
         <div aria-hidden="true" className="absolute -right-24 -top-32 h-96 w-96 rounded-full blur-3xl" style={{ background: accent, opacity: template.cardOpacity }} />
@@ -72,12 +77,12 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
             {metadata.owner && <Image src={repository.owner.avatarUrl} alt={`${repository.owner.login}'s avatar`} width={88} height={88} className="h-[clamp(52px,8vw,88px)] w-[clamp(52px,8vw,88px)] shrink-0 rounded-2xl border object-cover shadow-xl" style={{ borderColor: theme.border }} />}
             <div className="min-w-0">{metadata.owner && <p className="truncate text-[10px] font-medium sm:text-xs" style={{ color: accent }}>{repository.owner.login}</p>}<h3 className="mt-1 break-words text-xl font-bold tracking-tight sm:text-3xl" style={{ color: theme.foreground }}>{repository.name}</h3>{subtitle && <p className="mt-1 line-clamp-2 max-w-3xl text-xs font-medium leading-5 sm:text-sm" style={{ color: accent }}>{subtitle}</p>}{metadata.description && <p className="mt-2 line-clamp-3 max-w-3xl text-xs leading-5 sm:text-sm sm:leading-6" style={{ color: theme.muted }}>{repository.description || "No description provided."}</p>}{repository.topics.length > 0 && <div className="mt-3 flex min-w-0 flex-wrap items-center gap-1.5 overflow-hidden">{visibleTopics.map((topic) => <span key={topic} className="max-w-28 truncate rounded-full px-2 py-1 text-[8px] font-medium sm:max-w-36 sm:text-[9px]" style={{ background: theme.badge, border: `1px solid ${theme.border}`, color: theme.badgeText }}>{topic}</span>)}{remainingTopicCount > 0 && <span className="shrink-0 rounded-full px-2 py-1 text-[8px] font-medium sm:text-[9px]" style={{ background: theme.badge, border: `1px solid ${theme.border}`, color: theme.subtle }}>+{remainingTopicCount}</span>}</div>}</div>
           </div>
-          {stats.length > 0 && <div className="mt-[4%] grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">{stats.map((stat) => <div key={stat.label} className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3" style={{ background: theme.card, border: `1px solid ${theme.border}` }}><p className="text-[9px] uppercase tracking-wider sm:text-[10px]" style={{ color: theme.statLabel }}>{stat.label}</p><p className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-semibold sm:text-sm" style={{ color: theme.statValue }}>{stat.language && <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${languageColor}`} />}<span className="truncate">{stat.value}</span></p></div>)}</div>}
+          {stats.length > 0 && <div className="mt-[4%] grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">{stats.map((stat) => <div key={stat.label} className="min-w-0 rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-white/5 sm:px-4 sm:py-3" style={{ background: theme.card, border: `1px solid ${theme.border}` }}><p className="text-[9px] uppercase tracking-wider sm:text-[10px]" style={{ color: theme.statLabel }}>{stat.label}</p><p className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-semibold sm:text-sm" style={{ color: theme.statValue }}>{stat.language && <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${languageColor}`} />}<span className="truncate">{stat.value}</span></p></div>)}</div>}
           <div className="mt-3 flex min-w-0 items-center justify-between gap-3 border-t pt-3" style={{ borderColor: theme.border }}><span className="truncate text-[9px] sm:text-[10px]" style={{ color: theme.footer }}>{footerText}</span>{metadata.showGithubUrl && <span className="min-w-0 shrink truncate text-right text-[9px] sm:text-[10px]" style={{ color: theme.footer }}>github.com/{repository.fullName}</span>}</div>
         </div>
       </div>
     </div>
-    <div className="mt-5 flex flex-wrap items-center justify-center gap-3"><button type="button" onClick={handleDownload} disabled={downloading} aria-busy={downloading} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 disabled:cursor-not-allowed disabled:opacity-60" style={{ background: accent }}>{downloading ? <>Generating PNG...</> : <>Download PNG</>}</button><button type="button" onClick={onShare} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-semibold text-zinc-200 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70">Copy share link</button></div>
-    {downloadError && <div role="alert" aria-live="assertive" className="mt-3 flex flex-col items-center gap-2 text-center"><p className="text-xs text-red-400">{downloadError}</p><button type="button" onClick={handleDownload} disabled={downloading} className="min-h-9 rounded-lg border border-red-400/30 px-3 text-xs font-medium text-red-300">Try again</button></div>}
+    <div className="mt-5 flex flex-wrap items-center justify-center gap-3"><button type="button" onClick={handleDownload} disabled={downloading} aria-busy={downloading} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold text-white shadow-lg transition duration-200 hover:-translate-y-px hover:opacity-90 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 disabled:cursor-not-allowed disabled:opacity-60" style={{ background: accent }}>{downloading ? <>Generating PNG...</> : downloadComplete ? <>✓ PNG downloaded</> : <>Download PNG</>}</button><button type="button" onClick={onShare} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-semibold text-zinc-200 transition duration-200 hover:-translate-y-px hover:bg-white/10 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70">Copy share link</button></div>
+    {downloadError && <div role="alert" aria-live="assertive" className="mt-3 flex flex-col items-center gap-2 text-center"><p className="text-xs text-red-400">{downloadError}</p><button type="button" onClick={handleDownload} disabled={downloading} className="min-h-9 rounded-lg border border-red-400/30 px-3 text-xs font-medium text-red-300 transition-colors hover:bg-red-400/10">Try again</button></div>}
   </div>;
 }
