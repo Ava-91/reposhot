@@ -1,429 +1,372 @@
 # RepoShot
 
-> Create beautiful, shareable screenshots for your GitHub repositories.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Ava-91/reposhot/main/public/opengraph-image.svg" alt="RepoShot — beautiful GitHub repository cards" width="900">
+</p>
 
-RepoShot is a web app for turning GitHub repository information into polished, customizable visuals that you can use in your README, portfolio, social media, documentation, or project showcase.
+<p align="center">
+  <strong>Turn a GitHub repository into a polished, shareable PNG card.</strong>
+</p>
 
-🚧 **RepoShot is currently in development.**
+<p align="center">
+  <a href="https://reposhot.vercel.app/">Live demo</a> ·
+  <a href="https://github.com/Ava-91/reposhot/issues">Issues</a> ·
+  <a href="https://github.com/Ava-91/reposhot/releases">Releases</a>
+</p>
 
----
-
-## ✨ What is RepoShot?
-
-GitHub repositories contain a lot of useful information, but sometimes you just want to show a project visually.
-
-RepoShot aims to make that simple:
-
-```text
-GitHub repository
-       ↓
-   RepoShot
-       ↓
-Repository metadata
-       ↓
-Beautiful preview
-       ↓
-Customize
-       ↓
-Download as PNG
-```
-
-Instead of manually taking and editing screenshots of a repository, RepoShot will generate a consistent, presentation-ready image from a GitHub repository URL.
+<p align="center">
+  <img src="https://img.shields.io/github/actions/workflow/status/Ava-91/reposhot/ci.yml?label=CI" alt="CI status">
+  <img src="https://img.shields.io/github/commit-activity/t/Ava-91/reposhot?label=commits" alt="Commit activity">
+  <img src="https://img.shields.io/github/languages/top/Ava-91/reposhot" alt="Top language">
+  <img src="https://img.shields.io/github/stars/Ava-91/reposhot?style=flat" alt="GitHub stars">
+</p>
 
 ---
 
-## 🎯 MVP Scope
+## What is RepoShot?
 
-The first version of RepoShot focuses on one core workflow:
+RepoShot is a small, focused web app for creating presentation-ready visuals from public GitHub repositories.
 
-1. Enter a public GitHub repository URL
-2. Validate the repository URL
-3. Fetch public repository metadata
-4. Generate a 16:9 repository card
-5. Preview the result
-6. Export the card as a PNG
+Paste a repository URL, let RepoShot fetch its public metadata, customize the card, and export a PNG. No GitHub login is required.
 
-### Initial output
+It is useful for:
 
-The MVP will use:
+- README project showcases
+- portfolios and personal websites
+- social posts and project announcements
+- documentation and presentations
+- quickly giving a repository a visual identity
 
-- **Dimensions:** 1200 × 675 px
-- **Format:** PNG
-- **Theme:** Dark
-- **Repositories:** Public GitHub repositories
+## Try it
 
-### Repository information
+**[Open RepoShot →](https://reposhot.vercel.app/)**
 
-The initial card will include:
-
-- Repository name
-- Repository owner/avatar
-- Description
-- Primary language
-- Stars
-- Forks
-- Open issues
-- Repository URL
-
-### Out of scope for the MVP
-
-The first version will not include:
-
-- GitHub authentication
-- Private repositories
-- User accounts
-- Saved projects
-- Databases
-- Multiple templates
-- Custom text
-- Custom themes
-- Shareable presets
-- AI features
-
-These may be considered after the core RepoShot workflow is complete.
+The hosted version is the easiest way to try the app. A local development setup is also available below.
 
 ---
 
-## ✨ Planned Features
+## ✨ Features
 
-### Repository information
+### Repository cards
 
-- [ ] Paste a public GitHub repository URL
-- [ ] Fetch repository information from GitHub
-- [ ] Display repository name and owner
-- [ ] Display repository description
-- [ ] Display primary programming language
-- [ ] Display stars, forks, and issues
-- [ ] Display repository topics
-- [ ] Display repository/avatar information
+- Public GitHub repository URL validation
+- Repository name, owner, avatar, description, language, stars, forks, and open issues
+- Repository topics with compact overflow handling
+- Graceful handling of missing optional metadata
+- Clear errors for invalid or nonexistent repositories
+- Helpful messaging for GitHub API rate limits
 
 ### Customization
 
-- [ ] Light and dark themes
-- [ ] Multiple screenshot layouts
-- [ ] Multiple output sizes
-- [ ] Toggle individual metadata fields
-- [ ] Custom text options
-- [ ] Multiple visual templates
+- Multiple visual themes
+- Multiple card layouts
+- Reusable screenshot templates
+- Metadata visibility controls
+- Custom subtitle and footer text
+- Accent color customization
+- Shareable preset URLs that restore the selected configuration
 
-### Export
+### Export & sharing
 
-- [ ] Live preview
-- [ ] PNG export
-- [ ] Deterministic output dimensions
-- [ ] Appropriate generated filenames
+- PNG export
+- Deterministic image dimensions and filenames
+- Download success and error feedback
+- Shareable configuration links
+- Responsive preview workflow
+- Reduced-motion support
 
-### Developer experience
+### Engineering
 
-- [ ] Responsive design
-- [ ] Keyboard accessibility
-- [ ] Loading and error states
-- [ ] GitHub API rate-limit handling
-- [ ] Automated quality checks
-- [ ] Automated tests
-
-> Features are being implemented incrementally. The checklist above represents the project's roadmap, not necessarily the current functionality.
-
----
-
-## 🖼️ Preview
-
-> Screenshots will be added as the first version of RepoShot is implemented.
-
-<!-- Add screenshots/GIFs here once the UI exists. -->
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- GitHub REST API
+- 60-second repository caching
+- In-flight request deduplication
+- Automated lint, typecheck, test, and production-build checks
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-- [Node.js](https://nodejs.org/)
-- npm
-
-You can check your installed versions with:
-
-```bash
-node --version
-npm --version
-```
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/Ava-91/reposhot.git
-```
-
-### 2. Enter the project directory
-
-```bash
-cd reposhot
-```
-
-### 3. Install dependencies
-
-```bash
-npm install
-```
-
-### 4. Start the development server
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:3000` in your browser.
-
----
-
-## 🧑‍💻 Development
-
-RepoShot is being developed incrementally.
-
-The project uses GitHub Issues to track development from the initial project cleanup through the first public release.
-
-| Phase | Focus |
-|---|---|
-| Phase 0 | Project foundation |
-| Phase 1 | Core RepoShot MVP |
-| Phase 2 | Customization |
-| Phase 3 | Export and UX |
-| Phase 4 | Testing and engineering quality |
-| Phase 5 | Optional advanced features |
-| Phase 6 | Polish and first release |
-
-See the repository's **Issues** section for the current implementation plan.
-
----
-
-## 🛠️ Tech Stack
-
-RepoShot is built with modern web technologies:
-
-- **Next.js**
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **GitHub API**
-
-Additional libraries may be introduced as the project develops.
-
----
-
-## 📁 Project Structure
-
-The project uses the Next.js App Router.
+## 🖼️ How it works
 
 ```text
-reposhot/
-├── app/
-│   ├── components/
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── public/
-├── package.json
-├── tsconfig.json
-└── README.md
+┌─────────────────────────┐
+│ GitHub repository URL   │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Validate repository URL │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Fetch public metadata   │
+│ from GitHub             │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Choose theme, layout,   │
+│ template & metadata     │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Preview the RepoShot    │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Download PNG / share    │
+│ the preset URL          │
+└─────────────────────────┘
 ```
-
-The structure may change as RepoShot grows.
 
 ---
 
-## 🔗 How It Will Work
+## 📌 Supported repositories
 
-The intended workflow is:
+RepoShot currently targets **public GitHub repositories**.
 
-### 1. Enter a repository
-
-Paste a public GitHub repository URL into RepoShot.
-
-For example:
-
-```text
-https://github.com/Ava-91/MusicPlayer
-```
-
-### 2. Fetch repository information
-
-RepoShot retrieves the repository's public metadata from GitHub.
-
-### 3. Generate a preview
-
-The information is transformed into a RepoShot card.
-
-### 4. Customize it
-
-Choose the visual options you want, such as:
-
-- Theme
-- Layout
-- Metadata
-- Template
-
-### 5. Export
-
-Download the finished RepoShot as a PNG image.
-
----
-
-## 📌 Supported Repositories
-
-The initial version is intended to support **public GitHub repositories**.
-
-Private repositories and authenticated GitHub accounts are not currently part of the MVP.
-
-Repository URLs are expected to follow the standard format:
+Accepted repository URLs use this form:
 
 ```text
 https://github.com/<owner>/<repository>
 ```
 
-Support for additional URL formats may be added later.
+Examples:
+
+```text
+https://github.com/Ava-91/reposhot
+https://github.com/facebook/react
+https://github.com/microsoft/TypeScript
+```
+
+The URL parser intentionally rejects:
+
+- HTTP GitHub URLs
+- GitLab or other hosts
+- repository subpages such as issues or pull requests
+- URLs containing embedded credentials
+- incomplete repository URLs
+
+Private repositories and authenticated GitHub accounts are outside the current scope.
+
+For API details and rate-limit behavior, see [`docs/GITHUB_API.md`](docs/GITHUB_API.md).
 
 ---
 
-## ⚠️ Current Limitations
+## 🚀 Local development
 
-RepoShot is still under active development.
+### Requirements
 
-At the moment:
+- Node.js 24 or a compatible current Node.js release
+- npm
+- a modern browser
 
-- The project is not yet feature-complete.
-- The final screenshot design is still being developed.
-- GitHub metadata fetching is still being implemented.
-- PNG export is still planned.
-- Customization features are still planned.
-- The public release has not been made yet.
+### Setup
 
-The README will be updated as these features become available.
+```bash
+git clone https://github.com/Ava-91/reposhot.git
+cd reposhot
+npm install
+npm run dev
+```
+
+Then open:
+
+```text
+http://localhost:3000
+```
+
+### Production build
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm start
+```
+
+The same quality commands are executed by the GitHub Actions CI workflow.
 
 ---
 
-## 🗺️ Roadmap
+## 🧪 Testing
 
-The current roadmap is tracked through GitHub Issues.
+RepoShot has automated coverage for the deterministic parts of the application, including:
 
-### Phase 0 — Foundation
+- valid and invalid GitHub repository URLs
+- unusual repository names
+- long repository names and descriptions
+- missing descriptions, languages, topics, licenses, and avatars
+- large repository counters
+- malformed topic payloads
+- deterministic PNG export options
+- nonexistent repositories
+- GitHub rate-limit responses
+- generic GitHub API failures
 
-- [ ] Rewrite and establish project documentation
-- [ ] Define the MVP
-- [ ] Clean up the starter project
+The manual release matrix covers browser PNG export, narrow/mobile layouts, and runtime remote-avatar failures.
 
-### Phase 1 — MVP
+See [`docs/TEST_MATRIX.md`](docs/TEST_MATRIX.md).
 
-- [ ] Design the landing page
-- [ ] Add GitHub repository URL validation
-- [ ] Fetch repository metadata
-- [ ] Build the repository screenshot card
-- [ ] Connect the complete preview workflow
+Run the checks locally:
 
-### Phase 2 — Customization
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
 
-- [ ] Add themes
-- [ ] Add layout and size options
-- [ ] Add metadata visibility controls
-- [ ] Add topics and language information
+---
 
-### Phase 3 — Export
+## 🧱 Project structure
 
-- [ ] Add PNG export
-- [ ] Add loading, empty, and error states
-- [ ] Improve accessibility and responsive behavior
+```text
+reposhot/
+├── app/
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── favicon.ico
+├── components/
+│   ├── Hero.tsx
+│   ├── LayoutSelector.tsx
+│   ├── MetadataControls.tsx
+│   ├── RepoShotGenerator.tsx
+│   ├── RepositoryInput.tsx
+│   ├── RepositoryPreview.tsx
+│   ├── TemplateSelector.tsx
+│   └── ThemeSelector.tsx
+├── docs/
+│   ├── GITHUB_API.md
+│   ├── PNG_EXPORT.md
+│   ├── RELEASE.md
+│   └── TEST_MATRIX.md
+├── lib/
+│   ├── export-options.ts
+│   ├── export.ts
+│   ├── github-errors.ts
+│   ├── github-url.ts
+│   ├── github.ts
+│   ├── layouts.ts
+│   ├── preset.ts
+│   ├── repository-mapper.ts
+│   ├── templates.ts
+│   └── themes.ts
+├── public/
+│   └── opengraph-image.svg
+├── tests/
+│   └── core.test.ts
+├── CHANGELOG.md
+├── package.json
+└── README.md
+```
 
-### Phase 4 — Quality
+---
 
-- [ ] Add CI
-- [ ] Add automated tests
-- [ ] Improve GitHub API usage and caching
+## 🛠️ Tech stack
 
-### Phase 5 — Expansion
+| Technology | Role |
+| --- | --- |
+| **Next.js** | React framework and application runtime |
+| **React** | UI and interactive client components |
+| **TypeScript** | Type-safe application code |
+| **Tailwind CSS** | UI styling and responsive design |
+| **GitHub REST API** | Public repository metadata |
+| **html-to-image** | Client-side PNG generation |
+| **Node.js test runner** | Core automated tests |
+| **GitHub Actions** | Continuous integration |
 
-- [ ] Custom text
-- [ ] Additional templates
-- [ ] Shareable presets
+---
 
-### Phase 6 — Release
+## 🔐 API, caching & privacy
 
-- [ ] Final branding and metadata
-- [ ] UX polish
-- [ ] Edge-case testing
-- [ ] First public release
+RepoShot only needs public repository metadata for its current workflow. It does not ask for a GitHub password or personal access token.
+
+Repository requests are cached for 60 seconds, and simultaneous requests for the same repository are deduplicated. This reduces unnecessary GitHub API traffic while keeping the UI responsive.
+
+If GitHub returns a rate-limit response, RepoShot surfaces a specific message and uses `Retry-After` information when GitHub provides it.
+
+See [`docs/GITHUB_API.md`](docs/GITHUB_API.md) for more detail.
+
+---
+
+## 📦 Export details
+
+The generated image is a PNG using the selected layout dimensions. Filenames are deterministic and based on the repository owner and name.
+
+Example:
+
+```text
+reposhot-Ava-91-reposhot.png
+```
+
+See [`docs/PNG_EXPORT.md`](docs/PNG_EXPORT.md).
+
+---
+
+## 🗺️ Project status
+
+RepoShot has moved beyond the original Next.js starter and through its MVP implementation phases:
+
+- **Core workflow** — complete
+- **Customization** — complete
+- **Export and sharing** — complete
+- **API caching and error handling** — complete
+- **Automated quality checks** — complete
+- **UX and branding polish** — complete
+- **Edge-case test matrix** — complete
+- **Release preparation** — complete
+
+The repository's GitHub Issues remain the source of truth for future improvements.
 
 ---
 
 ## 🤝 Contributing
 
-RepoShot is currently primarily developed by **Ava-91**.
+Issues, bug reports, and focused improvements are welcome.
 
-Contributions may be opened in the future as the project becomes more mature.
+Before opening a change:
 
-If you find a bug or have an idea, opening an issue is welcome.
+1. Check existing issues and pull requests.
+2. Keep changes focused and explain the user-facing impact.
+3. Run lint, typecheck, tests, and a production build.
+4. Include screenshots or reproduction steps for UI changes when useful.
 
-Before contributing code, please check the existing issues to avoid duplicating ongoing work.
-
----
-
-## 🐛 Reporting Issues
-
-Found a bug or have a feature idea?
-
-Please open a GitHub Issue and include as much useful information as possible.
-
-For bugs, it is especially helpful to include:
-
-- What you expected to happen
-- What actually happened
-- Steps to reproduce the problem
-- Browser and operating system
-- Repository URL used, if relevant
-- Screenshots or error messages
+For bug reports, include the expected behavior, actual behavior, reproduction steps, browser/OS information, and the repository URL involved when relevant.
 
 ---
 
-## 🔐 Privacy
+## 📚 Documentation
 
-RepoShot is intended to work with **public GitHub repository information**.
-
-The project does not need access to a user's private GitHub repositories for its initial functionality.
-
-RepoShot should never require users to provide their GitHub password or personal access token simply to generate a screenshot of a public repository.
+- [`docs/GITHUB_API.md`](docs/GITHUB_API.md) — API requests, caching, and rate limits
+- [`docs/PNG_EXPORT.md`](docs/PNG_EXPORT.md) — PNG generation behavior
+- [`docs/TEST_MATRIX.md`](docs/TEST_MATRIX.md) — automated and manual edge-case coverage
+- [`docs/RELEASE.md`](docs/RELEASE.md) — release checklist and supported input
+- [`CHANGELOG.md`](CHANGELOG.md) — release history
 
 ---
 
-## 📜 License
+## 📄 License
 
-A license will be added before the first public release.
-
-Until a license is added, the repository should not be assumed to grant permission to reuse, modify, or redistribute the source code.
+No license has been added to the repository yet. Until a license is published, the source should not be assumed to grant permission to reuse, modify, or redistribute it.
 
 ---
 
 ## 👤 Author
 
-Built by **Ava-91**.
+Built by **[Ava-91](https://github.com/Ava-91)**.
 
-GitHub: https://github.com/Ava-91
-
----
-
-## ⭐ Project Status
-
-**RepoShot is an active work in progress.**
-
-The project started as an experiment and is now being rebuilt into a complete GitHub repository screenshot generator.
-
-The goal isn't to build an unnecessarily complicated platform.
-
-The goal is simple:
-
-> **Paste a GitHub repository. Make it look good. Share it.**
-
----
+If RepoShot is useful to you, consider giving the repository a ⭐.
 
 <p align="center">
-  Made with ❤️ and TypeScript
+  <br>
+  <strong>Paste a repository. Make it look good. Share it.</strong>
+  <br><br>
+  <a href="https://reposhot.vercel.app/">Try RepoShot →</a>
 </p>
