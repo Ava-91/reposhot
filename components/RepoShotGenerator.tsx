@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import LayoutSelector from "@/components/LayoutSelector";
 import MetadataControls, { MetadataVisibility } from "@/components/MetadataControls";
@@ -8,8 +8,10 @@ import RepositoryInput from "@/components/RepositoryInput";
 import RepositoryPreview from "@/components/RepositoryPreview";
 import ThemeSelector from "@/components/ThemeSelector";
 import { getRepository, RepositoryData } from "@/lib/github";
-import { defaultLayout, LayoutName } from "@/lib/layouts";
-import { defaultTheme, ThemeName } from "@/lib/themes";
+import { defaultLayout, layouts, LayoutName } from "@/lib/layouts";
+import { decodePreset, encodePreset } from "@/lib/preset";
+import { defaultTemplate, templates, TemplateName } from "@/lib/templates";
+import { defaultTheme, themes, ThemeName } from "@/lib/themes";
 
 const defaultMetadataVisibility: MetadataVisibility = {
   description: true, language: true, stars: true, forks: true, openIssues: true, owner: true,
@@ -21,8 +23,10 @@ export default function RepoShotGenerator() {
   const [lastRepository, setLastRepository] = useState<{ owner: string; repo: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [shareStatus, setShareStatus] = useState("");
   const [theme, setTheme] = useState<ThemeName>(defaultTheme);
   const [layout, setLayout] = useState<LayoutName>(defaultLayout);
+  const [template, setTemplate] = useState<TemplateName>(defaultTemplate);
   const [metadata, setMetadata] = useState<MetadataVisibility>(defaultMetadataVisibility);
 
   async function handleRepositorySubmit({ owner, repo }: { owner: string; repo: string }) {
@@ -32,7 +36,32 @@ export default function RepoShotGenerator() {
     finally { setLoading(false); }
   }
 
+  useEffect(() => {
+    const presetValue = new URLSearchParams(window.location.search).get("preset");
+    if (!presetValue) return;
+    const preset = decodePreset(presetValue, Object.keys(themes), Object.keys(layouts), Object.keys(templates));
+    if (!preset) { setError("That RepoShot preset is invalid."); return; }
+    setTheme(preset.theme); setLayout(preset.layout); setTemplate(preset.template); setMetadata(preset.metadata);
+    void handleRepositorySubmit({ owner: preset.owner, repo: preset.repo });
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
+
   function handleRetry() { if (lastRepository && !loading) void handleRepositorySubmit(lastRepository); }
+
+  async function handleShare() {
+    if (!lastRepository) return;
+    const preset = encodePreset({ owner: lastRepository.owner, repo: lastRepository.repo, theme, layout, template, metadata });
+    const url = new URL(window.location.href);
+    url.search = `?preset=${preset}`;
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setShareStatus("Share link copied!");
+      window.setTimeout(() => setShareStatus(""), 2500);
+    } catch {
+      setShareStatus("Clipboard unavailable. Copy the link from your browser address bar after opening the preset.");
+      window.history.replaceState(null, "", url);
+    }
+  }
 
   return (
     <section className="flex w-full flex-col items-center">
@@ -46,7 +75,8 @@ export default function RepoShotGenerator() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><span className="text-xs font-medium text-zinc-500">Layout</span><LayoutSelector value={layout} onChange={setLayout} /></div>
           <MetadataControls value={metadata} onChange={setMetadata} />
         </div>
-        <RepositoryPreview repository={repository} theme={theme} layout={layout} metadata={metadata} />
+        <RepositoryPreview repository={repository} theme={theme} layout={layout} metadata={metadata} template={template} onTemplateChange={setTemplate} onShare={handleShare} />
+        {shareStatus && <p role="status" aria-live="polite" className="mt-3 text-center text-xs text-zinc-400">{shareStatus}</p>}
       </section>}
     </section>
   );

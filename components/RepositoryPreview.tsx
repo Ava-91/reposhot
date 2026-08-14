@@ -9,10 +9,19 @@ import { RepositoryData } from "@/lib/github";
 import { downloadElementAsPng } from "@/lib/export";
 import { createExportOptions } from "@/lib/export-options";
 import { layouts, LayoutName } from "@/lib/layouts";
-import { defaultTemplate, templates, TemplateName } from "@/lib/templates";
+import { templates, TemplateName } from "@/lib/templates";
 import { themes, ThemeName } from "@/lib/themes";
 
-interface RepositoryPreviewProps { repository: RepositoryData; theme: ThemeName; layout: LayoutName; metadata: MetadataVisibility; }
+interface RepositoryPreviewProps {
+  repository: RepositoryData;
+  theme: ThemeName;
+  layout: LayoutName;
+  metadata: MetadataVisibility;
+  template: TemplateName;
+  onTemplateChange: (template: TemplateName) => void;
+  onShare: () => void;
+}
+
 function formatNumber(value: number): string { return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value); }
 function getLanguageColor(language: string): string {
   const colors: Record<string, string> = { JavaScript: "bg-yellow-400", TypeScript: "bg-blue-400", Python: "bg-green-400", Java: "bg-orange-400", "C++": "bg-pink-400", C: "bg-sky-400", CSharp: "bg-purple-400", Go: "bg-cyan-400", Rust: "bg-orange-500", PHP: "bg-indigo-400", Ruby: "bg-red-400", Swift: "bg-orange-300", Kotlin: "bg-violet-400" };
@@ -20,11 +29,10 @@ function getLanguageColor(language: string): string {
 }
 function safeText(value: string, fallback: string): string { const normalized = value.replace(/[\u0000-\u001f\u007f]/g, "").trim(); return normalized || fallback; }
 
-export default function RepositoryPreview({ repository, theme: themeName, layout: layoutName, metadata }: RepositoryPreviewProps) {
+export default function RepositoryPreview({ repository, theme: themeName, layout: layoutName, metadata, template: templateName, onTemplateChange, onShare }: RepositoryPreviewProps) {
   const previewRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
-  const [templateName, setTemplateName] = useState<TemplateName>(defaultTemplate);
   const theme = themes[themeName];
   const layout = layouts[layoutName];
   const template = templates[templateName];
@@ -51,7 +59,7 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
   ].filter(Boolean) as Array<{ label: string; value: string; language?: boolean }>;
 
   return <div className="w-full" aria-label="RepoShot preview and export">
-    <div className="mb-4"><TemplateSelector value={templateName} onChange={setTemplateName} /></div>
+    <div className="mb-4"><TemplateSelector value={templateName} onChange={onTemplateChange} /></div>
     <div className="mb-4 flex justify-end px-1"><span className="rounded-full border border-white/10 bg-white/3 px-3 py-1 text-xs text-zinc-500">{template.label} · {layout.width} × {layout.height}</span></div>
     <div className="w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40">
       <div ref={previewRef} className="relative w-full overflow-hidden" style={{ aspectRatio: layout.aspectRatio, background: theme.backgroundGradient, color: theme.foreground }}>
@@ -69,6 +77,7 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
         </div>
       </div>
     </div>
-    <div className="mt-5 flex flex-col items-center gap-3"><button type="button" onClick={handleDownload} disabled={downloading} aria-busy={downloading} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 disabled:cursor-not-allowed disabled:opacity-60" style={{ background: accent }}>{downloading ? <>Generating PNG...</> : <>Download PNG</>}</button>{downloadError && <div role="alert" aria-live="assertive" className="flex flex-col items-center gap-2 text-center"><p className="text-xs text-red-400">{downloadError}</p><button type="button" onClick={handleDownload} disabled={downloading} className="min-h-9 rounded-lg border border-red-400/30 px-3 text-xs font-medium text-red-300">Try again</button></div>}</div>
+    <div className="mt-5 flex flex-wrap items-center justify-center gap-3"><button type="button" onClick={handleDownload} disabled={downloading} aria-busy={downloading} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 disabled:cursor-not-allowed disabled:opacity-60" style={{ background: accent }}>{downloading ? <>Generating PNG...</> : <>Download PNG</>}</button><button type="button" onClick={onShare} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-semibold text-zinc-200 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70">Copy share link</button></div>
+    {downloadError && <div role="alert" aria-live="assertive" className="mt-3 flex flex-col items-center gap-2 text-center"><p className="text-xs text-red-400">{downloadError}</p><button type="button" onClick={handleDownload} disabled={downloading} className="min-h-9 rounded-lg border border-red-400/30 px-3 text-xs font-medium text-red-300">Try again</button></div>}
   </div>;
 }
