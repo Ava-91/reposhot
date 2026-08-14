@@ -17,7 +17,7 @@ export default function Home() {
             </span>
           </div>
 
-          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-zinc-400">
+          <span className="rounded-full border border-white/10 bg-white/3 px-3 py-1.5 text-xs font-medium text-zinc-400">
             In development
           </span>
         </nav>
