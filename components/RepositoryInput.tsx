@@ -80,7 +80,7 @@ export default function RepositoryInput({
     <section className="w-full max-w-2xl">
       <form onSubmit={handleSubmit}>
         <div
-          className={`rounded-2xl border bg-white/[0.04] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl transition ${
+          className={`rounded-2xl border bg-white/4 p-2 shadow-2xl shadow-black/20 backdrop-blur-xl transition ${
             error
               ? "border-red-400/40"
               : "border-white/10 focus-within:border-blue-400/40"

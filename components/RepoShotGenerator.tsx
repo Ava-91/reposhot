@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 
+import LayoutSelector from "@/components/LayoutSelector";
 import RepositoryInput from "@/components/RepositoryInput";
 import RepositoryPreview from "@/components/RepositoryPreview";
 import ThemeSelector from "@/components/ThemeSelector";
 import { getRepository, RepositoryData } from "@/lib/github";
+import { defaultLayout, LayoutName } from "@/lib/layouts";
 import { defaultTheme, ThemeName } from "@/lib/themes";
 
 export default function RepoShotGenerator() {
@@ -13,6 +15,7 @@ export default function RepoShotGenerator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [theme, setTheme] = useState<ThemeName>(defaultTheme);
+  const [layout, setLayout] = useState<LayoutName>(defaultLayout);
 
   async function handleRepositorySubmit({
     owner,
@@ -69,21 +72,35 @@ export default function RepoShotGenerator() {
 
       {repository && !loading && !error && (
         <section className="mt-10 w-full">
-          <div className="mb-4 flex flex-col gap-3 px-1 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-sm font-semibold text-zinc-200">
-                Preview
-              </h2>
+          <div className="mb-4 flex flex-col gap-4 px-1">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-zinc-200">
+                  Preview
+                </h2>
 
-              <p className="mt-1 text-xs text-zinc-500">
-                Your RepoShot preview.
-              </p>
+                <p className="mt-1 text-xs text-zinc-500">
+                  Your RepoShot preview.
+                </p>
+              </div>
+
+              <ThemeSelector value={theme} onChange={setTheme} />
             </div>
 
-            <ThemeSelector value={theme} onChange={setTheme} />
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-xs font-medium text-zinc-500">
+                Layout
+              </span>
+
+              <LayoutSelector value={layout} onChange={setLayout} />
+            </div>
           </div>
 
-          <RepositoryPreview repository={repository} theme={theme} />
+          <RepositoryPreview
+            repository={repository}
+            theme={theme}
+            layout={layout}
+          />
         </section>
       )}
     </section>

@@ -5,11 +5,13 @@ import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
 
 import { RepositoryData } from "@/lib/github";
+import { layouts, LayoutName } from "@/lib/layouts";
 import { themes, ThemeName } from "@/lib/themes";
 
 interface RepositoryPreviewProps {
   repository: RepositoryData;
   theme: ThemeName;
+  layout: LayoutName;
 }
 
 function formatNumber(value: number): string {
@@ -42,12 +44,14 @@ function getLanguageColor(language: string): string {
 export default function RepositoryPreview({
   repository,
   theme: themeName,
+  layout: layoutName,
 }: RepositoryPreviewProps) {
   const previewRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
 
   const theme = themes[themeName];
+  const layout = layouts[layoutName];
 
   async function handleDownload() {
     if (!previewRef.current || downloading) {
@@ -59,8 +63,8 @@ export default function RepositoryPreview({
 
     try {
       const dataUrl = await toPng(previewRef.current, {
-        width: 1200,
-        height: 675,
+        width: layout.width,
+        height: layout.height,
         pixelRatio: 1,
         cacheBust: true,
       });
@@ -83,11 +87,18 @@ export default function RepositoryPreview({
 
   return (
     <div className="w-full">
+      <div className="mb-4 flex justify-end px-1">
+        <span className="rounded-full border border-white/10 bg-white/3 px-3 py-1 text-xs text-zinc-500">
+          {layout.width} × {layout.height}
+        </span>
+      </div>
+
       <div className="w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40">
         <div
           ref={previewRef}
-          className="relative aspect-video w-full overflow-hidden"
+          className="relative w-full overflow-hidden"
           style={{
+            aspectRatio: layout.aspectRatio,
             background: theme.backgroundGradient,
             color: theme.foreground,
           }}
@@ -120,7 +131,7 @@ export default function RepositoryPreview({
             }}
           />
 
-          <div className="relative flex h-full min-w-0 flex-col p-[5.5%]">
+          <div className="relative flex h-full min-w-0 flex-col justify-center p-[5.5%]">
             {/* Header */}
             <div className="flex min-w-0 items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">

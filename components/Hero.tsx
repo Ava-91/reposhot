@@ -6,7 +6,7 @@ export default function Hero() {
         className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/10 blur-3xl"
       />
 
-      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/10 bg-blue-400/[0.06] px-4 py-2 text-sm text-blue-300">
+      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/10 bg-blue-400/6 px-4 py-2 text-sm text-blue-300">
         <span
           aria-hidden="true"
           className="h-1.5 w-1.5 rounded-full bg-blue-400"
