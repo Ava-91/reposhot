@@ -15,7 +15,7 @@ export default function PreviewPlaceholder() {
         </span>
       </div>
 
-      <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] shadow-2xl shadow-black/30">
+      <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/2 shadow-2xl shadow-black/30">
         <div
           aria-hidden="true"
           className="absolute inset-0 opacity-40"
@@ -27,7 +27,7 @@ export default function PreviewPlaceholder() {
         />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-zinc-500">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/4 text-zinc-500">
             <svg
               aria-hidden="true"
               className="h-6 w-6"

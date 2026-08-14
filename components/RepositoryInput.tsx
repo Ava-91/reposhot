@@ -2,9 +2,13 @@
 
 import { FormEvent, useState } from "react";
 
-interface Repository {
+export interface Repository {
   owner: string;
   repo: string;
+}
+
+interface RepositoryInputProps {
+  onSubmit: (repository: Repository) => void;
 }
 
 function parseGitHubUrl(value: string): Repository | null {
@@ -42,7 +46,9 @@ function parseGitHubUrl(value: string): Repository | null {
   }
 }
 
-export default function RepositoryInput() {
+export default function RepositoryInput({
+  onSubmit,
+}: RepositoryInputProps) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
@@ -59,8 +65,7 @@ export default function RepositoryInput() {
     }
 
     setError("");
-
-    console.log("Valid repository:", repository);
+    onSubmit(repository);
   }
 
   function handleChange(newValue: string) {

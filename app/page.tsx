@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
 import PreviewPlaceholder from "@/components/PreviewPlaceholder";
-import RepositoryInput from "@/components/RepositoryInput";
+import RepoShotGenerator from "@/components/RepoShotGenerator";
 
 export default function Home() {
   return (
@@ -24,7 +24,7 @@ export default function Home() {
 
         <div className="flex flex-1 flex-col items-center">
           <Hero />
-          <RepositoryInput />
+          <RepoShotGenerator />
         </div>
 
         <PreviewPlaceholder />
