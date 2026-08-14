@@ -1,23 +1,10 @@
-import { mapGitHubRepository, GitHubRepositoryPayload } from "@/lib/repository-mapper";
+import {
+  GitHubRepositoryPayload,
+  mapGitHubRepository,
+  RepositoryData,
+} from "@/lib/repository-mapper";
 
-export interface RepositoryData {
-  name: string;
-  fullName: string;
-  description: string | null;
-  htmlUrl: string;
-  homepage: string | null;
-  language: string | null;
-  topics: string[];
-  stars: number;
-  forks: number;
-  watchers: number;
-  openIssues: number;
-  license: string | null;
-  owner: {
-    login: string;
-    avatarUrl: string;
-  };
-}
+export type { RepositoryData } from "@/lib/repository-mapper";
 
 export async function getRepository(
   owner: string,
