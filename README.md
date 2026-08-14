@@ -32,7 +32,59 @@ Instead of manually taking and editing screenshots of a repository, RepoShot wil
 
 ---
 
-## 🎯 Planned Features
+## 🎯 MVP Scope
+
+The first version of RepoShot focuses on one core workflow:
+
+1. Enter a public GitHub repository URL
+2. Validate the repository URL
+3. Fetch public repository metadata
+4. Generate a 16:9 repository card
+5. Preview the result
+6. Export the card as a PNG
+
+### Initial output
+
+The MVP will use:
+
+- **Dimensions:** 1200 × 675 px
+- **Format:** PNG
+- **Theme:** Dark
+- **Repositories:** Public GitHub repositories
+
+### Repository information
+
+The initial card will include:
+
+- Repository name
+- Repository owner/avatar
+- Description
+- Primary language
+- Stars
+- Forks
+- Open issues
+- Repository URL
+
+### Out of scope for the MVP
+
+The first version will not include:
+
+- GitHub authentication
+- Private repositories
+- User accounts
+- Saved projects
+- Databases
+- Multiple templates
+- Custom text
+- Custom themes
+- Shareable presets
+- AI features
+
+These may be considered after the core RepoShot workflow is complete.
+
+---
+
+## ✨ Planned Features
 
 ### Repository information
 
