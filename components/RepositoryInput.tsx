@@ -2,36 +2,16 @@
 
 import { FormEvent, useState } from "react";
 
-export interface Repository {
-  owner: string;
-  repo: string;
-}
+import {
+  parseGitHubRepositoryUrl,
+  RepositoryReference,
+} from "@/lib/github-url";
+
+export type Repository = RepositoryReference;
 
 interface RepositoryInputProps {
   onSubmit: (repository: Repository) => void;
   disabled?: boolean;
-}
-
-function parseGitHubUrl(value: string): Repository | null {
-  const trimmedValue = value.trim();
-  if (!trimmedValue) return null;
-
-  try {
-    const url = new URL(trimmedValue);
-    if (url.protocol !== "https:" || url.hostname.toLowerCase() !== "github.com") {
-      return null;
-    }
-
-    const parts = url.pathname.split("/").filter(Boolean);
-    if (parts.length !== 2) return null;
-
-    const [owner, repo] = parts;
-    if (!owner || !repo) return null;
-
-    return { owner, repo };
-  } catch {
-    return null;
-  }
 }
 
 export default function RepositoryInput({
@@ -45,7 +25,7 @@ export default function RepositoryInput({
     event.preventDefault();
     if (disabled) return;
 
-    const repository = parseGitHubUrl(value);
+    const repository = parseGitHubRepositoryUrl(value);
     if (!repository) {
       setError(
         "Enter a valid public GitHub repository URL, such as https://github.com/owner/repository.",
