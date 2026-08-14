@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { parseGitHubRepositoryUrl } from "../lib/github-url";
-import { mapGitHubRepository } from "../lib/repository-mapper";
-import { createExportOptions } from "../lib/export-options";
+import { parseGitHubRepositoryUrl } from "../lib/github-url.ts";
+import { mapGitHubRepository } from "../lib/repository-mapper.ts";
+import { createExportOptions } from "../lib/export-options.ts";
 
 test("parses a valid GitHub repository URL", () => {
   assert.deepEqual(parseGitHubRepositoryUrl(" https://github.com/Ava-91/reposhot "), {
