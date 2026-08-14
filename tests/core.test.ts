@@ -1,14 +1,38 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { getGitHubRequestError } from "../lib/github-errors.ts";
 import { parseGitHubRepositoryUrl } from "../lib/github-url.ts";
 import { mapGitHubRepository } from "../lib/repository-mapper.ts";
 import { createExportOptions } from "../lib/export-options.ts";
+
+const baseRepository = {
+  name: "reposhot",
+  full_name: "Ava-91/reposhot",
+  description: "GitHub repository screenshot generator",
+  html_url: "https://github.com/Ava-91/reposhot",
+  homepage: "https://reposhot.example",
+  language: "TypeScript",
+  topics: ["github", "screenshots"],
+  stargazers_count: 12,
+  forks_count: 3,
+  subscribers_count: 7,
+  open_issues_count: 2,
+  license: { spdx_id: "MIT" },
+  owner: { login: "Ava-91", avatar_url: "https://example.com/avatar.png" },
+};
 
 test("parses a valid GitHub repository URL", () => {
   assert.deepEqual(parseGitHubRepositoryUrl(" https://github.com/Ava-91/reposhot "), {
     owner: "Ava-91",
     repo: "reposhot",
+  });
+});
+
+test("parses repository names with punctuation and underscores", () => {
+  assert.deepEqual(parseGitHubRepositoryUrl("https://github.com/octo-org/project_name.js"), {
+    owner: "octo-org",
+    repo: "project_name.js",
   });
 });
 
@@ -29,21 +53,7 @@ test("rejects invalid GitHub repository URLs", () => {
 });
 
 test("maps complete repository metadata", () => {
-  const repository = mapGitHubRepository({
-    name: "reposhot",
-    full_name: "Ava-91/reposhot",
-    description: "GitHub repository screenshot generator",
-    html_url: "https://github.com/Ava-91/reposhot",
-    homepage: "https://reposhot.example",
-    language: "TypeScript",
-    topics: ["github", "screenshots"],
-    stargazers_count: 12,
-    forks_count: 3,
-    subscribers_count: 7,
-    open_issues_count: 2,
-    license: { spdx_id: "MIT" },
-    owner: { login: "Ava-91", avatar_url: "https://example.com/avatar.png" },
-  });
+  const repository = mapGitHubRepository(baseRepository);
 
   assert.equal(repository.name, "reposhot");
   assert.equal(repository.fullName, "Ava-91/reposhot");
@@ -53,21 +63,34 @@ test("maps complete repository metadata", () => {
   assert.equal(repository.license, "MIT");
 });
 
+test("preserves long descriptions, many topics, and very large counters", () => {
+  const repository = mapGitHubRepository({
+    ...baseRepository,
+    name: "a".repeat(100),
+    description: "description ".repeat(500),
+    topics: Array.from({ length: 50 }, (_, index) => `topic-${index}`),
+    stargazers_count: Number.MAX_SAFE_INTEGER,
+    forks_count: 987_654_321,
+    subscribers_count: 123_456_789,
+    open_issues_count: 4_294_967_295,
+  });
+
+  assert.equal(repository.name.length, 100);
+  assert.equal(repository.description?.length, 6000);
+  assert.equal(repository.topics.length, 50);
+  assert.equal(repository.stars, Number.MAX_SAFE_INTEGER);
+  assert.equal(repository.openIssues, 4_294_967_295);
+});
+
 test("handles missing optional repository metadata", () => {
   const repository = mapGitHubRepository({
-    name: "minimal",
-    full_name: "Ava-91/minimal",
+    ...baseRepository,
     description: null,
-    html_url: "https://github.com/Ava-91/minimal",
     homepage: null,
     language: null,
     topics: [],
-    stargazers_count: 0,
-    forks_count: 0,
-    subscribers_count: 0,
-    open_issues_count: 0,
     license: null,
-    owner: { login: "Ava-91", avatar_url: "https://example.com/avatar.png" },
+    owner: { login: "Ava-91", avatar_url: null },
   });
 
   assert.equal(repository.description, null);
@@ -75,6 +98,16 @@ test("handles missing optional repository metadata", () => {
   assert.equal(repository.language, null);
   assert.deepEqual(repository.topics, []);
   assert.equal(repository.license, null);
+  assert.equal(repository.owner.avatarUrl, "");
+});
+
+test("treats malformed topic payloads as an empty topic list", () => {
+  const repository = mapGitHubRepository({
+    ...baseRepository,
+    topics: undefined,
+  });
+
+  assert.deepEqual(repository.topics, []);
 });
 
 test("prepares deterministic PNG export options", () => {
@@ -83,4 +116,27 @@ test("prepares deterministic PNG export options", () => {
     height: 675,
     filename: "reposhot-Ava-91-reposhot.png",
   });
+});
+
+test("reports a missing repository clearly", () => {
+  assert.equal(getGitHubRequestError(404, new Headers()).message, "Repository not found.");
+});
+
+test("reports GitHub rate limiting with retry information", () => {
+  const headers = new Headers({
+    "x-ratelimit-remaining": "0",
+    "retry-after": "30",
+  });
+
+  assert.equal(
+    getGitHubRequestError(429, headers).message,
+    "GitHub API rate limit reached. Try again in about 30 seconds.",
+  );
+});
+
+test("handles rejected GitHub requests without rate-limit headers", () => {
+  assert.equal(
+    getGitHubRequestError(500, new Headers()).message,
+    "Unable to fetch repository information.",
+  );
 });

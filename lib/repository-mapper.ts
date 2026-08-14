@@ -30,7 +30,7 @@ export interface GitHubRepositoryPayload {
   subscribers_count: number;
   open_issues_count: number;
   license: { spdx_id: string | null } | null;
-  owner: { login: string; avatar_url: string };
+  owner: { login: string; avatar_url?: string | null };
 }
 
 export function mapGitHubRepository(data: GitHubRepositoryPayload): RepositoryData {
@@ -49,7 +49,7 @@ export function mapGitHubRepository(data: GitHubRepositoryPayload): RepositoryDa
     license: data.license?.spdx_id ?? null,
     owner: {
       login: data.owner.login,
-      avatarUrl: data.owner.avatar_url,
+      avatarUrl: data.owner.avatar_url ?? "",
     },
   };
 }

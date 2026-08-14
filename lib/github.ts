@@ -3,6 +3,7 @@ import {
   mapGitHubRepository,
   RepositoryData,
 } from "@/lib/repository-mapper";
+import { getGitHubRequestError } from "@/lib/github-errors";
 
 export type { RepositoryData } from "@/lib/repository-mapper";
 
@@ -32,22 +33,7 @@ async function fetchRepository(owner: string, repo: string): Promise<RepositoryD
   );
 
   if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error("Repository not found.");
-    }
-
-    if (response.status === 403 || response.status === 429) {
-      const remaining = response.headers.get("x-ratelimit-remaining");
-      const retryAfter = response.headers.get("retry-after");
-      const retryMessage = retryAfter ? ` Try again in about ${retryAfter} seconds.` : " Please try again later.";
-      throw new Error(
-        remaining === "0"
-          ? `GitHub API rate limit reached.${retryMessage}`
-          : "GitHub temporarily rejected the request. Please try again later.",
-      );
-    }
-
-    throw new Error("Unable to fetch repository information.");
+    throw getGitHubRequestError(response.status, response.headers);
   }
 
   const data = (await response.json()) as GitHubRepositoryPayload;
