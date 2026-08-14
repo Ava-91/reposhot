@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import { useRef, useState } from "react";
+import { toPng } from "html-to-image";
 
 import { RepositoryData } from "@/lib/github";
 
@@ -16,11 +20,47 @@ function formatNumber(value: number): string {
 export default function RepositoryPreview({
   repository,
 }: RepositoryPreviewProps) {
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+
+  async function handleDownload() {
+    if (!previewRef.current || downloading) {
+      return;
+    }
+
+    setDownloading(true);
+    setDownloadError("");
+
+    try {
+      const dataUrl = await toPng(previewRef.current, {
+        width: 1200,
+        height: 675,
+        pixelRatio: 1,
+        cacheBust: true,
+      });
+
+      const link = document.createElement("a");
+
+      link.download = `reposhot-${repository.owner.login}-${repository.name}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch {
+      setDownloadError(
+        "Couldn't generate the image. Please try again.",
+      );
+    } finally {
+      setDownloading(false);
+    }
+  }
+
   return (
     <section className="mt-10 w-full">
       <div className="mb-4 flex items-center justify-between px-1">
         <div>
-          <h2 className="text-sm font-semibold text-zinc-200">Preview</h2>
+          <h2 className="text-sm font-semibold text-zinc-200">
+            Preview
+          </h2>
 
           <p className="mt-1 text-xs text-zinc-500">
             Your RepoShot preview.
@@ -32,7 +72,10 @@ export default function RepositoryPreview({
         </span>
       </div>
 
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl shadow-black/40">
+      <div
+        ref={previewRef}
+        className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl shadow-black/40"
+      >
         <div
           aria-hidden="true"
           className="absolute inset-0 opacity-30"
@@ -128,6 +171,54 @@ export default function RepositoryPreview({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-5 flex flex-col items-center gap-3">
+        <button
+          type="button"
+          onClick={handleDownload}
+          disabled={downloading}
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 text-sm font-semibold text-white shadow-lg shadow-blue-500/10 transition hover:bg-blue-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {downloading ? (
+            <>
+              <span
+                aria-hidden="true"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              />
+
+              Generating PNG...
+            </>
+          ) : (
+            <>
+              <svg
+                aria-hidden="true"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"
+                />
+              </svg>
+
+              Download PNG
+            </>
+          )}
+        </button>
+
+        {downloadError && (
+          <p
+            role="alert"
+            className="text-xs text-red-400"
+          >
+            {downloadError}
+          </p>
+        )}
       </div>
     </section>
   );
