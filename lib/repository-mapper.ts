@@ -1,4 +1,4 @@
-import { RepositoryData } from "@/lib/github";
+import type { RepositoryData } from "./github.ts";
 
 export interface GitHubRepositoryPayload {
   name: string;
