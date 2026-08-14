@@ -3,6 +3,9 @@
 import { useState } from "react";
 
 import LayoutSelector from "@/components/LayoutSelector";
+import MetadataControls, {
+  MetadataVisibility,
+} from "@/components/MetadataControls";
 import RepositoryInput from "@/components/RepositoryInput";
 import RepositoryPreview from "@/components/RepositoryPreview";
 import ThemeSelector from "@/components/ThemeSelector";
@@ -10,12 +13,24 @@ import { getRepository, RepositoryData } from "@/lib/github";
 import { defaultLayout, LayoutName } from "@/lib/layouts";
 import { defaultTheme, ThemeName } from "@/lib/themes";
 
+const defaultMetadataVisibility: MetadataVisibility = {
+  description: true,
+  language: true,
+  stars: true,
+  forks: true,
+  openIssues: true,
+  owner: true,
+};
+
 export default function RepoShotGenerator() {
   const [repository, setRepository] = useState<RepositoryData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [theme, setTheme] = useState<ThemeName>(defaultTheme);
   const [layout, setLayout] = useState<LayoutName>(defaultLayout);
+  const [metadata, setMetadata] = useState<MetadataVisibility>(
+    defaultMetadataVisibility,
+  );
 
   async function handleRepositorySubmit({
     owner,
@@ -94,12 +109,15 @@ export default function RepoShotGenerator() {
 
               <LayoutSelector value={layout} onChange={setLayout} />
             </div>
+
+            <MetadataControls value={metadata} onChange={setMetadata} />
           </div>
 
           <RepositoryPreview
             repository={repository}
             theme={theme}
             layout={layout}
+            metadata={metadata}
           />
         </section>
       )}
