@@ -1,4 +1,21 @@
-import type { RepositoryData } from "./github.ts";
+export interface RepositoryData {
+  name: string;
+  fullName: string;
+  description: string | null;
+  htmlUrl: string;
+  homepage: string | null;
+  language: string | null;
+  topics: string[];
+  stars: number;
+  forks: number;
+  watchers: number;
+  openIssues: number;
+  license: string | null;
+  owner: {
+    login: string;
+    avatarUrl: string;
+  };
+}
 
 export interface GitHubRepositoryPayload {
   name: string;
