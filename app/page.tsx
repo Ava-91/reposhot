@@ -1,5 +1,4 @@
 import Hero from "@/components/Hero";
-import PreviewPlaceholder from "@/components/PreviewPlaceholder";
 import RepoShotGenerator from "@/components/RepoShotGenerator";
 
 export default function Home() {
@@ -26,8 +25,6 @@ export default function Home() {
           <Hero />
           <RepoShotGenerator />
         </div>
-
-        <PreviewPlaceholder />
 
         <footer className="border-t border-white/5 py-6 text-center text-xs text-zinc-600">
           <p>

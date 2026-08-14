@@ -4,12 +4,15 @@ import { useState } from "react";
 
 import RepositoryInput from "@/components/RepositoryInput";
 import RepositoryPreview from "@/components/RepositoryPreview";
+import ThemeSelector from "@/components/ThemeSelector";
 import { getRepository, RepositoryData } from "@/lib/github";
+import { defaultTheme, ThemeName } from "@/lib/themes";
 
 export default function RepoShotGenerator() {
   const [repository, setRepository] = useState<RepositoryData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [theme, setTheme] = useState<ThemeName>(defaultTheme);
 
   async function handleRepositorySubmit({
     owner,
@@ -65,7 +68,23 @@ export default function RepoShotGenerator() {
       )}
 
       {repository && !loading && !error && (
-        <RepositoryPreview repository={repository} />
+        <section className="mt-10 w-full">
+          <div className="mb-4 flex flex-col gap-3 px-1 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-zinc-200">
+                Preview
+              </h2>
+
+              <p className="mt-1 text-xs text-zinc-500">
+                Your RepoShot preview.
+              </p>
+            </div>
+
+            <ThemeSelector value={theme} onChange={setTheme} />
+          </div>
+
+          <RepositoryPreview repository={repository} theme={theme} />
+        </section>
       )}
     </section>
   );
