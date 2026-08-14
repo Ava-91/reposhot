@@ -5,6 +5,7 @@ export interface RepositoryData {
   htmlUrl: string;
   homepage: string | null;
   language: string | null;
+  topics: string[];
   stars: number;
   forks: number;
   watchers: number;
@@ -23,6 +24,7 @@ interface GitHubRepositoryResponse {
   html_url: string;
   homepage: string | null;
   language: string | null;
+  topics?: string[];
   stargazers_count: number;
   forks_count: number;
   subscribers_count: number;
@@ -73,6 +75,7 @@ export async function getRepository(
     htmlUrl: data.html_url,
     homepage: data.homepage,
     language: data.language,
+    topics: Array.isArray(data.topics) ? data.topics : [],
     stars: data.stargazers_count,
     forks: data.forks_count,
     watchers: data.subscribers_count,
