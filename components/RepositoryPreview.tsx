@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
 
+import { MetadataVisibility } from "@/components/MetadataControls";
 import { RepositoryData } from "@/lib/github";
 import { layouts, LayoutName } from "@/lib/layouts";
 import { themes, ThemeName } from "@/lib/themes";
@@ -12,6 +13,7 @@ interface RepositoryPreviewProps {
   repository: RepositoryData;
   theme: ThemeName;
   layout: LayoutName;
+  metadata: MetadataVisibility;
 }
 
 function formatNumber(value: number): string {
@@ -45,6 +47,7 @@ export default function RepositoryPreview({
   repository,
   theme: themeName,
   layout: layoutName,
+  metadata,
 }: RepositoryPreviewProps) {
   const previewRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
@@ -171,25 +174,31 @@ export default function RepositoryPreview({
               </div>
             </div>
 
-            <div className="mt-[6%] grid min-h-0 grid-cols-[auto_minmax(0,1fr)] gap-4 sm:gap-6">
-              <Image
-                src={repository.owner.avatarUrl}
-                alt={`${repository.owner.login}'s avatar`}
-                width={88}
-                height={88}
-                className="h-[clamp(52px,8vw,88px)] w-[clamp(52px,8vw,88px)] shrink-0 rounded-2xl border object-cover shadow-xl"
-                style={{
-                  borderColor: theme.border,
-                }}
-              />
+            <div
+              className={`mt-[6%] grid min-h-0 gap-4 sm:gap-6 ${metadata.owner ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1"}`}
+            >
+              {metadata.owner && (
+                <Image
+                  src={repository.owner.avatarUrl}
+                  alt={`${repository.owner.login}'s avatar`}
+                  width={88}
+                  height={88}
+                  className="h-[clamp(52px,8vw,88px)] w-[clamp(52px,8vw,88px)] shrink-0 rounded-2xl border object-cover shadow-xl"
+                  style={{
+                    borderColor: theme.border,
+                  }}
+                />
+              )}
 
               <div className="min-w-0">
-                <p
-                  className="truncate text-[10px] font-medium sm:text-xs"
-                  style={{ color: theme.accent }}
-                >
-                  {repository.owner.login}
-                </p>
+                {metadata.owner && (
+                  <p
+                    className="truncate text-[10px] font-medium sm:text-xs"
+                    style={{ color: theme.accent }}
+                  >
+                    {repository.owner.login}
+                  </p>
+                )}
 
                 <h3
                   className="mt-1 truncate text-xl font-bold tracking-tight sm:text-3xl"
@@ -198,111 +207,124 @@ export default function RepositoryPreview({
                   {repository.name}
                 </h3>
 
-                <p
-                  className="mt-2 line-clamp-3 max-w-3xl text-xs leading-5 sm:text-sm sm:leading-6"
-                  style={{ color: theme.muted }}
-                >
-                  {repository.description || "No description provided."}
-                </p>
+                {metadata.description && (
+                  <p
+                    className="mt-2 line-clamp-3 max-w-3xl text-xs leading-5 sm:text-sm sm:leading-6"
+                    style={{ color: theme.muted }}
+                  >
+                    {repository.description || "No description provided."}
+                  </p>
+                )}
               </div>
             </div>
 
-            <div className="mt-[4%] grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-              {repository.language && (
-                <div
-                  className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
-                  style={{
-                    background: theme.card,
-                    border: `1px solid ${theme.border}`,
-                  }}
-                >
-                  <p
-                    className="text-[9px] uppercase tracking-wider sm:text-[10px]"
-                    style={{ color: theme.statLabel }}
+            {(metadata.language ||
+              metadata.stars ||
+              metadata.forks ||
+              metadata.openIssues) && (
+              <div className="mt-[4%] grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+                {metadata.language && repository.language && (
+                  <div
+                    className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
+                    style={{
+                      background: theme.card,
+                      border: `1px solid ${theme.border}`,
+                    }}
                   >
-                    Language
-                  </p>
+                    <p
+                      className="text-[9px] uppercase tracking-wider sm:text-[10px]"
+                      style={{ color: theme.statLabel }}
+                    >
+                      Language
+                    </p>
 
-                  <p
-                    className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-semibold sm:text-sm"
-                    style={{ color: theme.statValue }}
+                    <p
+                      className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-semibold sm:text-sm"
+                      style={{ color: theme.statValue }}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`h-2 w-2 shrink-0 rounded-full ${languageColor}`}
+                      />
+
+                      <span className="truncate">{repository.language}</span>
+                    </p>
+                  </div>
+                )}
+
+                {metadata.stars && (
+                  <div
+                    className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
+                    style={{
+                      background: theme.card,
+                      border: `1px solid ${theme.border}`,
+                    }}
                   >
-                    <span
-                      aria-hidden="true"
-                      className={`h-2 w-2 shrink-0 rounded-full ${languageColor}`}
-                    />
+                    <p
+                      className="text-[9px] uppercase tracking-wider sm:text-[10px]"
+                      style={{ color: theme.statLabel }}
+                    >
+                      Stars
+                    </p>
 
-                    <span className="truncate">{repository.language}</span>
-                  </p>
-                </div>
-              )}
+                    <p
+                      className="mt-1 truncate text-xs font-semibold sm:text-sm"
+                      style={{ color: theme.statValue }}
+                    >
+                      ★ {formatNumber(repository.stars)}
+                    </p>
+                  </div>
+                )}
 
-              <div
-                className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
-                style={{
-                  background: theme.card,
-                  border: `1px solid ${theme.border}`,
-                }}
-              >
-                <p
-                  className="text-[9px] uppercase tracking-wider sm:text-[10px]"
-                  style={{ color: theme.statLabel }}
-                >
-                  Stars
-                </p>
+                {metadata.forks && (
+                  <div
+                    className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
+                    style={{
+                      background: theme.card,
+                      border: `1px solid ${theme.border}`,
+                    }}
+                  >
+                    <p
+                      className="text-[9px] uppercase tracking-wider sm:text-[10px]"
+                      style={{ color: theme.statLabel }}
+                    >
+                      Forks
+                    </p>
 
-                <p
-                  className="mt-1 truncate text-xs font-semibold sm:text-sm"
-                  style={{ color: theme.statValue }}
-                >
-                  ★ {formatNumber(repository.stars)}
-                </p>
+                    <p
+                      className="mt-1 truncate text-xs font-semibold sm:text-sm"
+                      style={{ color: theme.statValue }}
+                    >
+                      {formatNumber(repository.forks)}
+                    </p>
+                  </div>
+                )}
+
+                {metadata.openIssues && (
+                  <div
+                    className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
+                    style={{
+                      background: theme.card,
+                      border: `1px solid ${theme.border}`,
+                    }}
+                  >
+                    <p
+                      className="text-[9px] uppercase tracking-wider sm:text-[10px]"
+                      style={{ color: theme.statLabel }}
+                    >
+                      Open issues
+                    </p>
+
+                    <p
+                      className="mt-1 truncate text-xs font-semibold sm:text-sm"
+                      style={{ color: theme.statValue }}
+                    >
+                      {formatNumber(repository.openIssues)}
+                    </p>
+                  </div>
+                )}
               </div>
-
-              <div
-                className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
-                style={{
-                  background: theme.card,
-                  border: `1px solid ${theme.border}`,
-                }}
-              >
-                <p
-                  className="text-[9px] uppercase tracking-wider sm:text-[10px]"
-                  style={{ color: theme.statLabel }}
-                >
-                  Forks
-                </p>
-
-                <p
-                  className="mt-1 truncate text-xs font-semibold sm:text-sm"
-                  style={{ color: theme.statValue }}
-                >
-                  {formatNumber(repository.forks)}
-                </p>
-              </div>
-
-              <div
-                className="min-w-0 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3"
-                style={{
-                  background: theme.card,
-                  border: `1px solid ${theme.border}`,
-                }}
-              >
-                <p
-                  className="text-[9px] uppercase tracking-wider sm:text-[10px]"
-                  style={{ color: theme.statLabel }}
-                >
-                  Open issues
-                </p>
-
-                <p
-                  className="mt-1 truncate text-xs font-semibold sm:text-sm"
-                  style={{ color: theme.statValue }}
-                >
-                  {formatNumber(repository.openIssues)}
-                </p>
-              </div>
-            </div>
+            )}
 
             <div
               className="mt-3 flex min-w-0 items-center justify-between gap-3 border-t pt-3"
