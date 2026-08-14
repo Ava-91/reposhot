@@ -25,17 +25,11 @@
 
 ## What is RepoShot?
 
-RepoShot is a small, focused web app for creating presentation-ready visuals from public GitHub repositories.
+RepoShot is a focused web app for creating presentation-ready visuals from public GitHub repositories.
 
 Paste a repository URL, let RepoShot fetch its public metadata, customize the card, and export a PNG. No GitHub login is required.
 
-It is useful for:
-
-- README project showcases
-- portfolios and personal websites
-- social posts and project announcements
-- documentation and presentations
-- quickly giving a repository a visual identity
+It is useful for README showcases, portfolios, project announcements, documentation, presentations, and giving a repository a visual identity.
 
 ## Try it
 
@@ -58,9 +52,7 @@ The hosted version is the easiest way to try the app. A local development setup 
 
 ### Customization
 
-- Multiple visual themes
-- Multiple card layouts
-- Reusable screenshot templates
+- Multiple visual themes, layouts, and reusable templates
 - Metadata visibility controls
 - Custom subtitle and footer text
 - Accent color customization
@@ -71,7 +63,6 @@ The hosted version is the easiest way to try the app. A local development setup 
 - PNG export
 - Deterministic image dimensions and filenames
 - Download success and error feedback
-- Shareable configuration links
 - Responsive preview workflow
 - Reduced-motion support
 
@@ -90,37 +81,17 @@ The hosted version is the easiest way to try the app. A local development setup 
 ## 🖼️ How it works
 
 ```text
-┌─────────────────────────┐
-│ GitHub repository URL   │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ Validate repository URL │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ Fetch public metadata   │
-│ from GitHub             │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ Choose theme, layout,   │
-│ template & metadata     │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ Preview the RepoShot    │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ Download PNG / share    │
-│ the preset URL          │
-└─────────────────────────┘
+GitHub repository URL
+        ↓
+Validate URL
+        ↓
+Fetch public GitHub metadata
+        ↓
+Choose theme, layout, template & metadata
+        ↓
+Preview RepoShot
+        ↓
+Download PNG or share the preset URL
 ```
 
 ---
@@ -143,13 +114,7 @@ https://github.com/facebook/react
 https://github.com/microsoft/TypeScript
 ```
 
-The URL parser intentionally rejects:
-
-- HTTP GitHub URLs
-- GitLab or other hosts
-- repository subpages such as issues or pull requests
-- URLs containing embedded credentials
-- incomplete repository URLs
+The URL parser intentionally rejects HTTP GitHub URLs, other hosts, repository subpages, embedded credentials, and incomplete repository URLs.
 
 Private repositories and authenticated GitHub accounts are outside the current scope.
 
@@ -163,6 +128,7 @@ For API details and rate-limit behavior, see [`docs/GITHUB_API.md`](docs/GITHUB_
 
 - Node.js 24 or a compatible current Node.js release
 - npm
+- Git
 - a modern browser
 
 ### Setup
@@ -174,53 +140,29 @@ npm install
 npm run dev
 ```
 
-Then open:
+Then open `http://localhost:3000`.
 
-```text
-http://localhost:3000
-```
-
-### Production build
+### Quality checks
 
 ```bash
 npm run lint
 npm run typecheck
 npm test
 npm run build
-npm start
+npm audit
 ```
 
-The same quality commands are executed by the GitHub Actions CI workflow.
+The same core checks run in GitHub Actions CI. See [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) for the full development and troubleshooting guide.
 
 ---
 
 ## 🧪 Testing
 
-RepoShot has automated coverage for the deterministic parts of the application, including:
-
-- valid and invalid GitHub repository URLs
-- unusual repository names
-- long repository names and descriptions
-- missing descriptions, languages, topics, licenses, and avatars
-- large repository counters
-- malformed topic payloads
-- deterministic PNG export options
-- nonexistent repositories
-- GitHub rate-limit responses
-- generic GitHub API failures
+RepoShot has automated coverage for deterministic behavior, including URL parsing, unusual repository names, long metadata, missing optional metadata, large counters, malformed topics, deterministic PNG options, nonexistent repositories, rate limits, and generic GitHub API failures.
 
 The manual release matrix covers browser PNG export, narrow/mobile layouts, and runtime remote-avatar failures.
 
 See [`docs/TEST_MATRIX.md`](docs/TEST_MATRIX.md).
-
-Run the checks locally:
-
-```bash
-npm run lint
-npm run typecheck
-npm test
-npm run build
-```
 
 ---
 
@@ -228,41 +170,15 @@ npm run build
 
 ```text
 reposhot/
-├── app/
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── favicon.ico
-├── components/
-│   ├── Hero.tsx
-│   ├── LayoutSelector.tsx
-│   ├── MetadataControls.tsx
-│   ├── RepoShotGenerator.tsx
-│   ├── RepositoryInput.tsx
-│   ├── RepositoryPreview.tsx
-│   ├── TemplateSelector.tsx
-│   └── ThemeSelector.tsx
-├── docs/
-│   ├── GITHUB_API.md
-│   ├── PNG_EXPORT.md
-│   ├── RELEASE.md
-│   └── TEST_MATRIX.md
-├── lib/
-│   ├── export-options.ts
-│   ├── export.ts
-│   ├── github-errors.ts
-│   ├── github-url.ts
-│   ├── github.ts
-│   ├── layouts.ts
-│   ├── preset.ts
-│   ├── repository-mapper.ts
-│   ├── templates.ts
-│   └── themes.ts
-├── public/
-│   └── opengraph-image.svg
-├── tests/
-│   └── core.test.ts
+├── app/              # Next.js pages, metadata, and global styles
+├── components/       # Interactive UI and editor components
+├── docs/             # Development, API, export, testing, and release docs
+├── lib/              # GitHub, presets, themes, layouts, templates, and export logic
+├── public/           # Static assets
+├── tests/             # Core automated tests
+├── .github/           # CI and repository automation
 ├── CHANGELOG.md
+├── CONTRIBUTING.md
 ├── package.json
 └── README.md
 ```
@@ -288,11 +204,9 @@ reposhot/
 
 RepoShot only needs public repository metadata for its current workflow. It does not ask for a GitHub password or personal access token.
 
-Repository requests are cached for 60 seconds, and simultaneous requests for the same repository are deduplicated. This reduces unnecessary GitHub API traffic while keeping the UI responsive.
+Repository requests are cached for 60 seconds, and simultaneous requests for the same repository are deduplicated. If GitHub returns a rate-limit response, RepoShot surfaces a specific retry-oriented message and uses `Retry-After` information when GitHub provides it.
 
-If GitHub returns a rate-limit response, RepoShot surfaces a specific message and uses `Retry-After` information when GitHub provides it.
-
-See [`docs/GITHUB_API.md`](docs/GITHUB_API.md) for more detail.
+See [`docs/GITHUB_API.md`](docs/GITHUB_API.md) for implementation details.
 
 ---
 
@@ -312,16 +226,7 @@ See [`docs/PNG_EXPORT.md`](docs/PNG_EXPORT.md).
 
 ## 🗺️ Project status
 
-RepoShot has moved beyond the original Next.js starter and through its MVP implementation phases:
-
-- **Core workflow** — complete
-- **Customization** — complete
-- **Export and sharing** — complete
-- **API caching and error handling** — complete
-- **Automated quality checks** — complete
-- **UX and branding polish** — complete
-- **Edge-case test matrix** — complete
-- **Release preparation** — complete
+RepoShot has moved beyond the original Next.js starter through its core workflow, customization, export and sharing, API caching, automated quality checks, UX polish, edge-case testing, and release-preparation phases.
 
 The repository's GitHub Issues remain the source of truth for future improvements.
 
@@ -331,19 +236,14 @@ The repository's GitHub Issues remain the source of truth for future improvement
 
 Issues, bug reports, and focused improvements are welcome.
 
-Before opening a change:
-
-1. Check existing issues and pull requests.
-2. Keep changes focused and explain the user-facing impact.
-3. Run lint, typecheck, tests, and a production build.
-4. Include screenshots or reproduction steps for UI changes when useful.
-
-For bug reports, include the expected behavior, actual behavior, reproduction steps, browser/OS information, and the repository URL involved when relevant.
+Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request. It covers the development workflow, branch and PR conventions, commit messages, quality checks, issue reports, and the pre-PR checklist.
 
 ---
 
 ## 📚 Documentation
 
+- [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) — setup, scripts, architecture, troubleshooting, and development workflow
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — contribution and pull-request guidelines
 - [`docs/GITHUB_API.md`](docs/GITHUB_API.md) — API requests, caching, and rate limits
 - [`docs/PNG_EXPORT.md`](docs/PNG_EXPORT.md) — PNG generation behavior
 - [`docs/TEST_MATRIX.md`](docs/TEST_MATRIX.md) — automated and manual edge-case coverage
