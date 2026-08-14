@@ -7,13 +7,10 @@ interface LayoutSelectorProps {
   onChange: (layout: LayoutName) => void;
 }
 
-export default function LayoutSelector({
-  value,
-  onChange,
-}: LayoutSelectorProps) {
+export default function LayoutSelector({ value, onChange }: LayoutSelectorProps) {
   return (
     <div
-      className="flex flex-wrap items-center gap-2"
+      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
       aria-label="Screenshot layout"
       role="group"
     >
@@ -27,16 +24,14 @@ export default function LayoutSelector({
             type="button"
             onClick={() => onChange(layoutName)}
             aria-pressed={selected}
-            className={`rounded-xl border px-3 py-2 text-left transition ${
+            aria-label={`${layout.label}, ${layout.width} by ${layout.height} pixels${selected ? ", selected" : ""}`}
+            className={`min-h-11 rounded-xl border px-3 py-2 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70 ${
               selected
                 ? "border-blue-400/40 bg-blue-400/10 text-blue-300"
                 : "border-white/10 bg-white/3 text-zinc-400 hover:bg-white/6 hover:text-zinc-200"
             }`}
           >
-            <span className="block text-xs font-semibold">
-              {layout.label}
-            </span>
-
+            <span className="block text-xs font-semibold">{layout.label}</span>
             <span className="mt-0.5 block text-[10px] text-zinc-500">
               {layout.width} × {layout.height}
             </span>

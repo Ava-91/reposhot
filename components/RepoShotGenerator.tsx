@@ -24,6 +24,10 @@ const defaultMetadataVisibility: MetadataVisibility = {
 
 export default function RepoShotGenerator() {
   const [repository, setRepository] = useState<RepositoryData | null>(null);
+  const [lastRepository, setLastRepository] = useState<{
+    owner: string;
+    repo: string;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [theme, setTheme] = useState<ThemeName>(defaultTheme);
@@ -42,10 +46,10 @@ export default function RepoShotGenerator() {
     setLoading(true);
     setError("");
     setRepository(null);
+    setLastRepository({ owner, repo });
 
     try {
       const data = await getRepository(owner, repo);
-
       setRepository(data);
     } catch (error) {
       setError(
@@ -58,20 +62,35 @@ export default function RepoShotGenerator() {
     }
   }
 
+  function handleRetry() {
+    if (lastRepository && !loading) {
+      void handleRepositorySubmit(lastRepository);
+    }
+  }
+
   return (
     <section className="flex w-full flex-col items-center">
-      <RepositoryInput onSubmit={handleRepositorySubmit} />
+      <RepositoryInput onSubmit={handleRepositorySubmit} disabled={loading} />
+
+      {!loading && !error && !repository && (
+        <div className="mt-8 w-full max-w-2xl rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-8 text-center">
+          <p className="text-sm font-medium text-zinc-300">Ready for a RepoShot?</p>
+          <p className="mt-1 text-xs text-zinc-500">
+            Paste a public GitHub repository URL above to generate your preview.
+          </p>
+        </div>
+      )}
 
       {loading && (
         <div
           role="status"
+          aria-live="polite"
           className="mt-6 flex items-center gap-3 text-sm text-zinc-400"
         >
           <span
             aria-hidden="true"
-            className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-blue-400"
+            className="motion-safe:animate-spin h-4 w-4 rounded-full border-2 border-zinc-700 border-t-blue-400"
           />
-
           Fetching repository information...
         </div>
       )}
@@ -79,34 +98,37 @@ export default function RepoShotGenerator() {
       {error && !loading && (
         <div
           role="alert"
-          className="mt-6 w-full max-w-2xl rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-400"
+          aria-live="assertive"
+          className="mt-6 flex w-full max-w-2xl flex-col gap-3 rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-400 sm:flex-row sm:items-center sm:justify-between"
         >
-          {error}
+          <p>{error}</p>
+          {lastRepository && (
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="min-h-10 shrink-0 rounded-lg border border-red-400/30 px-4 text-xs font-semibold text-red-300 transition hover:bg-red-400/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/60"
+            >
+              Try again
+            </button>
+          )}
         </div>
       )}
 
       {repository && !loading && !error && (
-        <section className="mt-10 w-full">
+        <section className="mt-10 w-full" aria-label="Repository preview editor">
           <div className="mb-4 flex flex-col gap-4 px-1">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-sm font-semibold text-zinc-200">
-                  Preview
-                </h2>
-
+                <h2 className="text-sm font-semibold text-zinc-200">Preview</h2>
                 <p className="mt-1 text-xs text-zinc-500">
                   Your RepoShot preview.
                 </p>
               </div>
-
               <ThemeSelector value={theme} onChange={setTheme} />
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-xs font-medium text-zinc-500">
-                Layout
-              </span>
-
+              <span className="text-xs font-medium text-zinc-500">Layout</span>
               <LayoutSelector value={layout} onChange={setLayout} />
             </div>
 

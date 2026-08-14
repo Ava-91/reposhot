@@ -9,38 +9,26 @@ export interface Repository {
 
 interface RepositoryInputProps {
   onSubmit: (repository: Repository) => void;
+  disabled?: boolean;
 }
 
 function parseGitHubUrl(value: string): Repository | null {
   const trimmedValue = value.trim();
-
-  if (!trimmedValue) {
-    return null;
-  }
+  if (!trimmedValue) return null;
 
   try {
     const url = new URL(trimmedValue);
-
-    if (url.protocol !== "https:" || url.hostname !== "github.com") {
+    if (url.protocol !== "https:" || url.hostname.toLowerCase() !== "github.com") {
       return null;
     }
 
     const parts = url.pathname.split("/").filter(Boolean);
-
-    if (parts.length !== 2) {
-      return null;
-    }
+    if (parts.length !== 2) return null;
 
     const [owner, repo] = parts;
+    if (!owner || !repo) return null;
 
-    if (!owner || !repo) {
-      return null;
-    }
-
-    return {
-      owner,
-      repo,
-    };
+    return { owner, repo };
   } catch {
     return null;
   }
@@ -48,15 +36,16 @@ function parseGitHubUrl(value: string): Repository | null {
 
 export default function RepositoryInput({
   onSubmit,
+  disabled = false,
 }: RepositoryInputProps) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (disabled) return;
 
     const repository = parseGitHubUrl(value);
-
     if (!repository) {
       setError(
         "Enter a valid public GitHub repository URL, such as https://github.com/owner/repository.",
@@ -70,15 +59,12 @@ export default function RepositoryInput({
 
   function handleChange(newValue: string) {
     setValue(newValue);
-
-    if (error) {
-      setError("");
-    }
+    if (error) setError("");
   }
 
   return (
     <section className="w-full max-w-2xl">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} aria-busy={disabled}>
         <div
           className={`rounded-2xl border bg-white/4 p-2 shadow-2xl shadow-black/20 backdrop-blur-xl transition ${
             error
@@ -111,25 +97,23 @@ export default function RepositoryInput({
                 aria-label="GitHub repository URL"
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? "repository-error" : undefined}
-                className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-zinc-600 sm:text-base"
+                disabled={disabled}
+                className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-zinc-600 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
               />
             </label>
 
             <button
               type="submit"
-              className="min-h-12 rounded-xl bg-blue-500 px-6 text-sm font-semibold text-white transition hover:bg-blue-400 active:scale-[0.98] sm:shrink-0"
+              disabled={disabled}
+              className="min-h-12 rounded-xl bg-blue-500 px-6 text-sm font-semibold text-white transition hover:bg-blue-400 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 disabled:cursor-not-allowed disabled:opacity-60 sm:shrink-0"
             >
-              Generate Shot
+              {disabled ? "Generating..." : "Generate Shot"}
             </button>
           </div>
         </div>
 
         {error ? (
-          <p
-            id="repository-error"
-            role="alert"
-            className="mt-3 text-sm text-red-400"
-          >
+          <p id="repository-error" role="alert" className="mt-3 text-sm text-red-400">
             {error}
           </p>
         ) : (
