@@ -7,7 +7,6 @@ import { createExportOptions } from "../lib/export-options.ts";
 import { getLanguageColor } from "../lib/language-colors.ts";
 
 const baseRepository = { name: "reposhot", full_name: "Ava-91/reposhot", description: "GitHub repository screenshot generator", html_url: "https://github.com/Ava-91/reposhot", homepage: "https://reposhot.example", language: "TypeScript", topics: ["github", "screenshots"], stargazers_count: 12, forks_count: 3, subscribers_count: 7, open_issues_count: 2, license: { spdx_id: "MIT" }, owner: { login: "Ava-91", avatar_url: "https://example.com/avatar.png" } };
-
 test("parses a valid GitHub repository URL", () => { assert.deepEqual(parseGitHubRepositoryUrl(" https://github.com/Ava-91/reposhot "), { owner: "Ava-91", repo: "reposhot" }); });
 test("parses repository names with punctuation and underscores", () => { assert.deepEqual(parseGitHubRepositoryUrl("https://github.com/octo-org/project_name.js"), { owner: "octo-org", repo: "project_name.js" }); });
 test("rejects invalid GitHub repository URLs", () => { for (const value of ["", "reposhot", "http://github.com/Ava-91/reposhot", "https://gitlab.com/Ava-91/reposhot", "https://github.com/Ava-91/reposhot/issues", "https://github.com/Ava-91", "https://user:password@github.com/Ava-91/reposhot"]) assert.equal(parseGitHubRepositoryUrl(value), null, value); });
