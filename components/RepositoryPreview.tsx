@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { MetadataVisibility } from "@/components/MetadataControls";
 import TemplateSelector from "@/components/TemplateSelector";
@@ -29,11 +29,18 @@ function getLanguageColor(language: string): string {
 }
 function safeText(value: string, fallback: string): string { const normalized = value.replace(/[\u0000-\u001f\u007f]/g, "").trim(); return normalized || fallback; }
 
+function createAvatarFallback(login: string): string {
+  const initials = login.trim().slice(0, 2).toUpperCase() || "?";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88"><rect width="88" height="88" rx="16" fill="#27272a"/><text x="44" y="49" text-anchor="middle" dominant-baseline="middle" fill="#d4d4d8" font-family="Arial,sans-serif" font-size="28" font-weight="700">${initials}</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
 export default function RepositoryPreview({ repository, theme: themeName, layout: layoutName, metadata, template: templateName, onTemplateChange, onShare }: RepositoryPreviewProps) {
   const previewRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
   const [downloadComplete, setDownloadComplete] = useState(false);
+  const [avatarSrc, setAvatarSrc] = useState(() => createAvatarFallback(repository.owner.login));
   const theme = themes[themeName];
   const layout = layouts[layoutName];
   const template = templates[templateName];
@@ -42,6 +49,37 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
   const accent = metadata.accentColor || theme.accent || template.accent;
   const subtitle = metadata.subtitle.trim();
   const footerText = safeText(metadata.footerText, "Public repository");
+
+  useEffect(() => {
+    let cancelled = false;
+    const fallback = createAvatarFallback(repository.owner.login);
+
+    if (!repository.owner.avatarUrl) {
+      setAvatarSrc(fallback);
+      return () => { cancelled = true; };
+    }
+
+    setAvatarSrc(fallback);
+    fetch(repository.owner.avatarUrl, { mode: "cors" })
+      .then((response) => {
+        if (!response.ok) throw new Error("Avatar request failed");
+        return response.blob();
+      })
+      .then((blob) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Avatar conversion failed"));
+        reader.onerror = () => reject(reader.error ?? new Error("Avatar conversion failed"));
+        reader.readAsDataURL(blob);
+      }))
+      .then((dataUrl) => {
+        if (!cancelled) setAvatarSrc(dataUrl);
+      })
+      .catch(() => {
+        if (!cancelled) setAvatarSrc(fallback);
+      });
+
+    return () => { cancelled = true; };
+  }, [repository.owner.avatarUrl, repository.owner.login]);
 
   async function handleDownload() {
     if (!previewRef.current || downloading) return;
@@ -74,7 +112,7 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
         <div className="relative flex h-full min-w-0 flex-col justify-center p-[5.5%]" style={{ borderRadius: template.radius }}>
           <div className="flex min-w-0 items-center justify-between gap-4"><div className="flex min-w-0 items-center gap-3"><div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold ring-1" style={{ background: theme.card, color: accent, boxShadow: `0 0 0 1px ${theme.border}` }}>R</div><span className="truncate text-[10px] font-semibold uppercase tracking-[0.22em] sm:text-xs" style={{ color: theme.subtle }}>RepoShot</span></div><div className="flex shrink-0 items-center gap-2 rounded-full px-2.5 py-1 text-[9px] font-medium sm:px-3 sm:text-[10px]" style={{ background: theme.badge, border: `1px solid ${theme.border}`, color: theme.badgeText }}>GitHub</div></div>
           <div className={`mt-[6%] grid min-h-0 gap-4 sm:gap-6 ${metadata.owner ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1"}`}>
-            {metadata.owner && <Image src={repository.owner.avatarUrl} alt={`${repository.owner.login}'s avatar`} width={88} height={88} className="h-[clamp(52px,8vw,88px)] w-[clamp(52px,8vw,88px)] shrink-0 rounded-2xl border object-cover shadow-xl" style={{ borderColor: theme.border }} />}
+            {metadata.owner && <Image src={avatarSrc} alt={`${repository.owner.login}'s avatar`} width={88} height={88} unoptimized className="h-[clamp(52px,8vw,88px)] w-[clamp(52px,8vw,88px)] shrink-0 rounded-2xl border object-cover shadow-xl" style={{ borderColor: theme.border }} />}
             <div className="min-w-0">{metadata.owner && <p className="truncate text-[10px] font-medium sm:text-xs" style={{ color: accent }}>{repository.owner.login}</p>}<h3 className="mt-1 break-words text-xl font-bold tracking-tight sm:text-3xl" style={{ color: theme.foreground }}>{repository.name}</h3>{subtitle && <p className="mt-1 line-clamp-2 max-w-3xl text-xs font-medium leading-5 sm:text-sm" style={{ color: accent }}>{subtitle}</p>}{metadata.description && <p className="mt-2 line-clamp-3 max-w-3xl text-xs leading-5 sm:text-sm sm:leading-6" style={{ color: theme.muted }}>{repository.description || "No description provided."}</p>}{repository.topics.length > 0 && <div className="mt-3 flex min-w-0 flex-wrap items-center gap-1.5 overflow-hidden">{visibleTopics.map((topic) => <span key={topic} className="max-w-28 truncate rounded-full px-2 py-1 text-[8px] font-medium sm:max-w-36 sm:text-[9px]" style={{ background: theme.badge, border: `1px solid ${theme.border}`, color: theme.badgeText }}>{topic}</span>)}{remainingTopicCount > 0 && <span className="shrink-0 rounded-full px-2 py-1 text-[8px] font-medium sm:text-[9px]" style={{ background: theme.badge, border: `1px solid ${theme.border}`, color: theme.subtle }}>+{remainingTopicCount}</span>}</div>}</div>
           </div>
           {stats.length > 0 && <div className="mt-[4%] grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">{stats.map((stat) => <div key={stat.label} className="min-w-0 rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-white/5 sm:px-4 sm:py-3" style={{ background: theme.card, border: `1px solid ${theme.border}` }}><p className="text-[9px] uppercase tracking-wider sm:text-[10px]" style={{ color: theme.statLabel }}>{stat.label}</p><p className="mt-1 flex min-w-0 items-center gap-1.5 truncate text-xs font-semibold sm:text-sm" style={{ color: theme.statValue }}>{stat.language && <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${languageColor}`} />}<span className="truncate">{stat.value}</span></p></div>)}</div>}
