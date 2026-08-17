@@ -5,6 +5,7 @@ import { getGitHubRequestError } from "../lib/github-errors.ts";
 import { parseGitHubRepositoryUrl } from "../lib/github-url.ts";
 import { mapGitHubRepository } from "../lib/repository-mapper.ts";
 import { createExportOptions } from "../lib/export-options.ts";
+import { getLanguageColor } from "../lib/language-colors.ts";
 
 const baseRepository = {
   name: "reposhot",
@@ -116,6 +117,13 @@ test("prepares deterministic PNG export options", () => {
     height: 675,
     filename: "reposhot-Ava-91-reposhot.png",
   });
+});
+
+test("uses GitHub-compatible language colors", () => {
+  assert.equal(getLanguageColor("C#"), "#178600");
+  assert.equal(getLanguageColor("TypeScript"), "#3178c6");
+  assert.equal(getLanguageColor("Rust"), "#dea584");
+  assert.equal(getLanguageColor("UnknownLanguage"), "#a1a1aa");
 });
 
 test("reports a missing repository clearly", () => {
