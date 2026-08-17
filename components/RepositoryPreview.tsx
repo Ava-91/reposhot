@@ -40,7 +40,56 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
   const [downloadComplete, setDownloadComplete] = useState(false);
-  const [avatarSrc, setAvatarSrc] = useState(() => createAvatarFallback(repository.owner.login));
+  const [avatarSrc, setAvatarSrc] = useState(() =>
+    createAvatarFallback(repository.owner.login)
+  );
+
+  useEffect(() => {
+    if (!repository.owner.avatarUrl) return;
+
+    let cancelled = false;
+
+    fetch(repository.owner.avatarUrl, { mode: "cors" })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Avatar request failed");
+        }
+
+        return response.blob();
+      })
+      .then(
+        (blob) =>
+          new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+              if (typeof reader.result === "string") {
+                resolve(reader.result);
+              } else {
+                reject(new Error("Avatar conversion failed"));
+              }
+            };
+
+            reader.onerror = () => {
+              reject(reader.error ?? new Error("Avatar conversion failed"));
+            };
+
+            reader.readAsDataURL(blob);
+          })
+      )
+      .then((dataUrl) => {
+        if (!cancelled) {
+          setAvatarSrc(dataUrl);
+        }
+      })
+      .catch(() => {
+        // Keep generated fallback avatar
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [repository.owner.avatarUrl]);
   const theme = themes[themeName];
   const layout = layouts[layoutName];
   const template = templates[templateName];
@@ -51,35 +100,54 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
   const footerText = safeText(metadata.footerText, "Public repository");
 
   useEffect(() => {
-    let cancelled = false;
-    const fallback = createAvatarFallback(repository.owner.login);
-
     if (!repository.owner.avatarUrl) {
-      setAvatarSrc(fallback);
-      return () => { cancelled = true; };
+      return;
     }
 
-    setAvatarSrc(fallback);
+    let cancelled = false;
+
     fetch(repository.owner.avatarUrl, { mode: "cors" })
       .then((response) => {
-        if (!response.ok) throw new Error("Avatar request failed");
+        if (!response.ok) {
+          throw new Error("Avatar request failed");
+        }
+
         return response.blob();
       })
-      .then((blob) => new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Avatar conversion failed"));
-        reader.onerror = () => reject(reader.error ?? new Error("Avatar conversion failed"));
-        reader.readAsDataURL(blob);
-      }))
+      .then(
+        (blob) =>
+          new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+              if (typeof reader.result === "string") {
+                resolve(reader.result);
+              } else {
+                reject(new Error("Avatar conversion failed"));
+              }
+            };
+
+            reader.onerror = () => {
+              reject(reader.error ?? new Error("Avatar conversion failed"));
+            };
+
+            reader.readAsDataURL(blob);
+          })
+      )
       .then((dataUrl) => {
-        if (!cancelled) setAvatarSrc(dataUrl);
+        if (!cancelled) {
+          setAvatarSrc(dataUrl);
+        }
       })
       .catch(() => {
-        if (!cancelled) setAvatarSrc(fallback);
+        // Keep the generated fallback avatar
+        // already stored in the initial state
       });
 
-    return () => { cancelled = true; };
-  }, [repository.owner.avatarUrl, repository.owner.login]);
+    return () => {
+      cancelled = true;
+    };
+  }, [repository.owner.avatarUrl]);
 
   async function handleDownload() {
     if (!previewRef.current || downloading) return;
