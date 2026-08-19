@@ -11,10 +11,10 @@ export interface RepositoryData {
   watchers: number;
   openIssues: number;
   license: string | null;
-  owner: {
-    login: string;
-    avatarUrl: string;
-  };
+  createdAt: string;
+  updatedAt: string;
+  pushedAt: string | null;
+  owner: { login: string; avatarUrl: string };
 }
 
 export interface GitHubRepositoryPayload {
@@ -30,6 +30,9 @@ export interface GitHubRepositoryPayload {
   subscribers_count: number;
   open_issues_count: number;
   license: { spdx_id: string | null } | null;
+  created_at: string;
+  updated_at: string;
+  pushed_at?: string | null;
   owner: { login: string; avatar_url?: string | null };
 }
 
@@ -47,6 +50,9 @@ export function mapGitHubRepository(data: GitHubRepositoryPayload): RepositoryDa
     watchers: data.subscribers_count,
     openIssues: data.open_issues_count,
     license: data.license?.spdx_id ?? null,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+    pushedAt: data.pushed_at ?? null,
     owner: {
       login: data.owner.login,
       avatarUrl: data.owner.avatar_url ?? "",
