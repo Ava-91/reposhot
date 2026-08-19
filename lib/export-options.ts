@@ -10,9 +10,12 @@ export function createExportOptions(
   owner: string,
   repository: string,
 ): ExportOptions {
+  const isWrappedExport = repository.endsWith("-wrapped");
+  const prefix = isWrappedExport ? "reposhot-wrapped" : "reposhot";
+
   return {
     width,
     height,
-    filename: `reposhot-${owner}-${repository}.png`,
+    filename: `${prefix}-${owner}-${repository}.png`,
   };
 }
