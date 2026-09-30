@@ -17,7 +17,7 @@ npm --version
 git --version
 ```
 
-RepoShot currently uses Next.js 16.3, React 19, TypeScript 6, and ESLint 9. Prefer the versions declared in `package.json` and install from the lockfile rather than upgrading individual tooling packages without checking CI.
+RepoShot currently uses Next.js 16.3.4, React 19.3.0, TypeScript 7.0.2, and ESLint 10.10.0. Prefer the versions declared in `package.json` and install from the lockfile rather than upgrading individual tooling packages without checking CI.
 
 ## First-time setup
 
