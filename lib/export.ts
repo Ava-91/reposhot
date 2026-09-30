@@ -9,15 +9,16 @@ interface PngExportOptions {
 export async function downloadElementAsPng(
   element: HTMLElement,
   { width, height, filename }: PngExportOptions,
- ): Promise<void> {\n  const startedAt = Date.now();
+): Promise<void> {
+  const startedAt = Date.now();
   const dataUrl = await toPng(element, {
     width,
     height,
     pixelRatio: 1,
     cacheBust: true,
     style: {
-      width: `${width}px`,
-      height: `${height}px`,
+      width: width + "px",
+      height: height + "px",
     },
   });
 
@@ -28,4 +29,6 @@ export async function downloadElementAsPng(
   document.body.appendChild(link);
   link.click();
   link.remove();
+
+  void startedAt;
 }
