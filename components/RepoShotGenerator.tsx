@@ -19,7 +19,7 @@ export default function RepoShotGenerator() {
     <section className="flex w-full flex-col items-center">
       <div className="mb-6 grid w-full max-w-2xl grid-cols-3 border-y border-white/10 bg-[#0f1115]" role="tablist" aria-label="RepoShot mode">
         {(["card", "battle", "wrapped"] as const).map((value) => (
-          <button key={value} type="button" role="tab" aria-selected={activeMode === value} onClick={() => { setActiveMode(value); switchMode(value); }} className={`min-h-12 border-r border-white/10 px-3 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] transition last:border-r-0 ${activeMode === value ? "bg-white/10 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-zinc-300"}`}>
+          <button key={value} type="button" role="tab" aria-selected={activeMode === value} onMouseDown={() => setActiveMode(value)} onClick={() => switchMode(value)} className={`min-h-12 border-r border-white/10 px-3 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] transition last:border-r-0 ${activeMode === value ? "bg-white/10 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-zinc-300"}`}>
             {value === "card" ? "Repo Card" : value === "battle" ? "Repository Battle" : "Repo Wrapped"}
           </button>
         ))}
