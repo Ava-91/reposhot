@@ -10,7 +10,7 @@ export async function downloadElementAsPng(
   element: HTMLElement,
   { width, height, filename }: PngExportOptions,
 ): Promise<void> {
-  const dataUrl = await toPng(element, {
+  const markStart = `reposhot-png-start-${performance.now()}`;\n  performance.mark(markStart);\n  const dataUrl = await toPng(element, {
     width,
     height,
     pixelRatio: 1,
