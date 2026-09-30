@@ -10,10 +10,10 @@ export default function Home() {
             <span className="font-mono text-sm font-bold tracking-tight text-white">R/</span>
             <span className="text-sm font-semibold tracking-tight">RepoShot</span>
           </div>
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-500">in development</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-400">in development</span>
         </nav>
         <div className="flex flex-1 flex-col items-center"><Hero /><RepoShotGenerator /></div>
-        <footer className="mt-16 border-t border-white/10 py-5 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600">RepoShot · repository snapshots for people who build things</footer>
+        <footer className="mt-16 border-t border-white/10 py-5 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">RepoShot · repository snapshots for people who build things</footer>
       </div>
     </main>
   );
