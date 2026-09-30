@@ -10,7 +10,6 @@ export async function downloadElementAsPng(
   element: HTMLElement,
   { width, height, filename }: PngExportOptions,
 ): Promise<void> {
-  const startedAt = Date.now();
   const dataUrl = await toPng(element, {
     width,
     height,
@@ -29,6 +28,4 @@ export async function downloadElementAsPng(
   document.body.appendChild(link);
   link.click();
   link.remove();
-
-  void startedAt;
 }
