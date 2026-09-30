@@ -12,13 +12,14 @@ import { useRepoShotGenerator } from "@/components/useRepoShotGenerator";
 
 export default function RepoShotGenerator() {
   const { mode, repository, secondRepository, loading, error, shareStatus, theme, layout, template, metadata, setTheme, setLayout, setTemplate, setMetadata, loadRepository, switchMode, handleShare } = useRepoShotGenerator();
-  const [activeMode, setActiveMode] = useState(mode);\n  const showEditor = Boolean(repository && !loading && !error && activeMode === "card");
+  const [activeMode, setActiveMode] = useState(mode);
+  const showEditor = Boolean(repository && !loading && !error && activeMode === "card");
 
   return (
     <section className="flex w-full flex-col items-center">
       <div className="mb-6 grid w-full max-w-2xl grid-cols-3 border-y border-white/10 bg-[#0f1115]" role="tablist" aria-label="RepoShot mode">
         {(["card", "battle", "wrapped"] as const).map((value) => (
-          <button key={value} type="button" role="tab" aria-selected={activeMode === value} onClick={() => { setActiveMode(value); switchMode(value); }} className={`min-h-12 border-r border-white/10 px-3 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] transition last:border-r-0 ${mode === value ? "bg-white/10 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-zinc-300"}`}>
+          <button key={value} type="button" role="tab" aria-selected={activeMode === value} onClick={() => { setActiveMode(value); switchMode(value); }} className={`min-h-12 border-r border-white/10 px-3 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] transition last:border-r-0 ${activeMode === value ? "bg-white/10 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-zinc-300"}`}>
             {value === "card" ? "Repo Card" : value === "battle" ? "Repository Battle" : "Repo Wrapped"}
           </button>
         ))}
@@ -29,7 +30,7 @@ export default function RepoShotGenerator() {
       {loading && <div role="status" aria-live="polite" className="mt-6 font-mono text-xs text-zinc-400">Fetching repository information…</div>}
       {error && !loading && <div role="alert" className="mt-6 w-full max-w-2xl border-l-2 border-red-400 bg-red-400/5 px-4 py-3 text-sm text-red-400">{error}</div>}
 
-      {mode === "battle" && repository && secondRepository && !loading && !error && <section className="mt-10 w-full"><RepositoryBattle left={repository} right={secondRepository} /></section>}
+      {activeMode === "battle" && repository && secondRepository && !loading && !error && <section className="mt-10 w-full"><RepositoryBattle left={repository} right={secondRepository} /></section>}
       {activeMode === "wrapped" && repository && !loading && !error && <section className="mt-10 w-full"><RepositoryWrapped repository={repository} /></section>}
 
       {repository && showEditor && <section className="mt-10 w-full" aria-label="Repository preview editor">
