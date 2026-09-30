@@ -30,7 +30,7 @@ export default function RepoShotGenerator() {
       {mode === "battle" && repository && secondRepository && !loading && !error && <section className="mt-10 w-full"><RepositoryBattle left={repository} right={secondRepository} /></section>}
       {mode === "wrapped" && repository && !loading && !error && <section className="mt-10 w-full"><RepositoryWrapped repository={repository} /></section>}
 
-      {showEditor && <section className="mt-10 w-full" aria-label="Repository preview editor">
+      {repository && showEditor && <section className="mt-10 w-full" aria-label="Repository preview editor">
         <div className="mb-5 border-y border-white/10 py-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div><h2 className="font-mono text-xs uppercase tracking-[0.14em] text-white">Preview</h2><p className="mt-1 text-xs text-zinc-600">Configure the image, then export it.</p></div>
