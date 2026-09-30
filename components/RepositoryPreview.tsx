@@ -11,13 +11,12 @@ import { LayoutName, layouts } from "@/lib/layouts";
 import { TemplateName, templates } from "@/lib/templates";
 import { ThemeName, themes } from "@/lib/themes";
 import { getRepositoryVibe } from "@/lib/vibe";
+import { createAvatarFallback, loadAvatarAsDataUrl } from "@/lib/avatar";
 
 interface RepositoryPreviewProps { repository: RepositoryData; theme: ThemeName; layout: LayoutName; metadata: MetadataVisibility; template: TemplateName; onTemplateChange: (template: TemplateName) => void; onShare: () => void; }
 function formatNumber(value: number) { return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value); }
 function getLanguageColor(language: string) { const colors: Record<string, string> = { JavaScript: "#facc15", TypeScript: "#60a5fa", Python: "#4ade80", Java: "#fb923c", "C++": "#f472b6", C: "#38bdf8", "C#": "#a78bfa", Go: "#22d3ee", Rust: "#f97316", PHP: "#818cf8", Ruby: "#f87171", Swift: "#fdba74", Kotlin: "#a78bfa" }; return colors[language] ?? "#a1a1aa"; }
 function safeText(value: string, fallback: string) { return value.replace(/[\u0000-\u001f\u007f]/g, "").trim() || fallback; }
-function createAvatarFallback(login: string) { const initials = login.trim().slice(0, 2).toUpperCase() || "?"; const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88"><rect width="88" height="88" rx="16" fill="#27272a"/><text x="44" y="49" text-anchor="middle" fill="#d4d4d8" font-family="Arial,sans-serif" font-size="28" font-weight="700">${initials}</text></svg>`; return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`; }
-
 export default function RepositoryPreview({ repository, theme: themeName, layout: layoutName, metadata, template: templateName, onTemplateChange, onShare }: RepositoryPreviewProps) {
   const previewRef = useRef<HTMLDivElement>(null); const [downloading, setDownloading] = useState(false); const [downloadError, setDownloadError] = useState(""); const [downloadComplete, setDownloadComplete] = useState(false);
   const [avatarSrc, setAvatarSrc] = useState(() => createAvatarFallback(repository.owner.login));
