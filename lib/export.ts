@@ -1,6 +1,6 @@
 import { toPng } from "html-to-image";
 
-interface PngExportOptions {
+export interface PngExportOptions {
   width: number;
   height: number;
   filename: string;
