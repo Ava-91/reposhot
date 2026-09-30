@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { downloadElementAsPng } from "@/lib/export";
-import type { PngExportOptions } from "@/lib/export";
+type PngExportOptions = { width: number; height: number; filename: string };
 
 export function usePngExport() {
   const [busy, setBusy] = useState(false);
