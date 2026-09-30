@@ -254,7 +254,7 @@ Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request. 
 
 ## 📄 License
 
-No license has been added to the repository yet. Until a license is published, the source should not be assumed to grant permission to reuse, modify, or redistribute it.
+RepoShot is released under the MIT License. See [`LICENSE`](LICENSE) for the full license text.
 
 ---
 
