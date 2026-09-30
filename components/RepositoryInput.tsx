@@ -34,15 +34,15 @@ export default function RepositoryInput({ onSubmit, disabled = false }: Reposito
         <div className={`border-y bg-[#101216] transition-colors ${error ? "border-red-400/60" : "border-white/10 focus-within:border-emerald-300/70"}`}>
           <div className="flex flex-col sm:flex-row">
             <label className="flex min-h-14 flex-1 items-center px-1 sm:px-4">
-              <span className="mr-3 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600" aria-hidden="true">URL</span>
-              <input type="url" value={value} onChange={(event) => handleChange(event.target.value)} placeholder="https://github.com/owner/repository" aria-label="GitHub repository URL" aria-invalid={Boolean(error)} aria-describedby={error ? "repository-error" : undefined} disabled={disabled} className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-zinc-600 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base" />
+              <span className="mr-3 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400" aria-hidden="true">URL</span>
+              <input type="url" value={value} onChange={(event) => handleChange(event.target.value)} placeholder="https://github.com/owner/repository" aria-label="GitHub repository URL" aria-invalid={Boolean(error)} aria-describedby={error ? "repository-error" : undefined} disabled={disabled} className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base" />
             </label>
             <button type="submit" disabled={disabled} className="min-h-12 border-l border-white/10 bg-emerald-400 px-6 text-sm font-bold text-[#07110d] transition hover:bg-emerald-300 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-14">
               {disabled ? "Fetching…" : "Generate →"}
             </button>
           </div>
         </div>
-        {error ? <p id="repository-error" role="alert" className="mt-3 text-sm text-red-400">{error}</p> : <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600">public repositories · PNG export</p>}
+        {error ? <p id="repository-error" role="alert" className="mt-3 text-sm text-red-400">{error}</p> : <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">public repositories · PNG export</p>}
       </form>
     </section>
   );
