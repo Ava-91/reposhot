@@ -3,34 +3,17 @@ import RepoShotGenerator from "@/components/RepoShotGenerator";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#09090b] text-white">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8 sm:px-8 lg:px-10">
-        <nav className="flex items-center justify-between">
+    <main className="min-h-screen bg-[#0b0c0e] text-[#f3f4f6]">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 sm:px-8 lg:px-10">
+        <nav className="flex items-center justify-between border-b border-white/10 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500 text-sm font-bold shadow-lg shadow-blue-500/20">
-              R
-            </div>
-
-            <span className="text-lg font-semibold tracking-tight">
-              RepoShot
-            </span>
+            <span className="font-mono text-sm font-bold tracking-tight text-white">R/</span>
+            <span className="text-sm font-semibold tracking-tight">RepoShot</span>
           </div>
-
-          <span className="rounded-full border border-white/10 bg-white/3 px-3 py-1.5 text-xs font-medium text-zinc-400">
-            In development
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-400">in development</span>
         </nav>
-
-        <div className="flex flex-1 flex-col items-center">
-          <Hero />
-          <RepoShotGenerator />
-        </div>
-
-        <footer className="border-t border-white/5 py-6 text-center text-xs text-zinc-600">
-          <p>
-            RepoShot · Built for showcasing the projects you&apos;re proud of.
-          </p>
-        </footer>
+        <div className="flex flex-1 flex-col items-center"><Hero /><RepoShotGenerator /></div>
+        <footer className="mt-16 border-t border-white/10 py-5 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">RepoShot · repository snapshots for people who build things</footer>
       </div>
     </main>
   );

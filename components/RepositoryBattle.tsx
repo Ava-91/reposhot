@@ -16,6 +16,7 @@ const metrics = [
 
 export default function RepositoryBattle({ left, right }: { left: RepositoryData; right: RepositoryData }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { busy: downloading, done: downloadComplete, error: downloadError, download: exportPng } = usePngExport();
 
 
 
