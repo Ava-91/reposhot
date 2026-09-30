@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   keywords: ["GitHub", "repository screenshots", "RepoShot", "developer tools", "open source"],
   authors: [{ name: "Ava-91", url: "https://github.com/Ava-91" }],
   creator: "Ava-91",
-  metadataBase: new URL("https://reposhot.app"),
+  metadataBase: new URL("https://reposhot.vercel.app"),
   openGraph: {
     type: "website",
     title: "RepoShot — Beautiful GitHub repository screenshots",
