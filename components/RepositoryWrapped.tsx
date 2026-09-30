@@ -11,6 +11,7 @@ function activityLabel(pushedAt: string | null) { if (!pushedAt) return "No rece
 
 export default function RepositoryWrapped({ repository }: { repository: RepositoryData }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { busy: downloading, done: downloadComplete, error: downloadError, download: exportPng } = usePngExport();
 
 
 
