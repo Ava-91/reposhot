@@ -23,7 +23,7 @@
 
 ---
 
-## What is RepoShot?
+## Preview\n\n![RepoShot generated card preview](https://raw.githubusercontent.com/Ava-91/reposhot/main/public/opengraph-image.svg)\n\nThe image above is the project’s generated social/card preview; the live editor can produce customized PNG cards from any public repository.\n\n## What is RepoShot?
 
 RepoShot is a focused web app for creating presentation-ready visuals from public GitHub repositories.
 
