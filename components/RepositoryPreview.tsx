@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { MetadataVisibility } from "@/components/MetadataControls";
 import TemplateSelector from "@/components/TemplateSelector";
 import { RepositoryData } from "@/lib/github";
-import { downloadElementAsPng } from "@/lib/export";
+import { usePngExport } from "@/components/usePngExport";
 import { createExportOptions } from "@/lib/export-options";
 import { LayoutName, layouts } from "@/lib/layouts";
 import { TemplateName, templates } from "@/lib/templates";
@@ -22,7 +22,8 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
   const [avatarSrc, setAvatarSrc] = useState(() => createAvatarFallback(repository.owner.login));
   useEffect(() => { if (!repository.owner.avatarUrl) return; let cancelled = false; fetch(repository.owner.avatarUrl, { mode: "cors" }).then((response) => { if (!response.ok) throw new Error("Avatar request failed"); return response.blob(); }).then((blob) => new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Avatar conversion failed")); reader.onerror = () => reject(reader.error ?? new Error("Avatar conversion failed")); reader.readAsDataURL(blob); })).then((dataUrl) => { if (!cancelled) setAvatarSrc(dataUrl); }).catch(() => undefined); return () => { cancelled = true; }; }, [repository.owner.avatarUrl]);
   const theme = themes[themeName]; const layout = layouts[layoutName]; const template = templates[templateName]; const visibleTopics = repository.topics.slice(0, 4); const remainingTopicCount = Math.max(repository.topics.length - visibleTopics.length, 0); const accent = metadata.accentColor || theme.accent || template.accent; const subtitle = metadata.subtitle.trim(); const footerText = safeText(metadata.footerText, "Public repository"); const vibe = metadata.showVibe ? getRepositoryVibe(repository) : null;
-  async function handleDownload() { if (!previewRef.current || downloading) return; setDownloading(true); setDownloadError(""); setDownloadComplete(false); try { await downloadElementAsPng(previewRef.current, createExportOptions(layout.width, layout.height, repository.owner.login, repository.name)); setDownloadComplete(true); window.setTimeout(() => setDownloadComplete(false), 2500); } catch { setDownloadError("Couldn't generate the image. Please try again."); } finally { setDownloading(false); } }
+  function handleDownload() { void exportPng(previewRef.current, createExportOptions(layout.width, layout.height, repository.owner.login, repository.name)); }
+
   const stats = [metadata.language && repository.language ? { label: "Language", value: repository.language, language: true } : null, metadata.stars ? { label: "Stars", value: `★ ${formatNumber(repository.stars)}` } : null, metadata.forks ? { label: "Forks", value: formatNumber(repository.forks) } : null, metadata.openIssues ? { label: "Open issues", value: formatNumber(repository.openIssues) } : null].filter(Boolean) as Array<{ label: string; value: string; language?: boolean }>;
   return <div className="reposhot-fade-up w-full" aria-label="RepoShot preview and export">
     <div className="mb-4"><TemplateSelector value={templateName} onChange={onTemplateChange} /></div><div className="mb-4 flex justify-end px-1"><span className="rounded-full border border-white/10 bg-white/3 px-3 py-1 text-xs text-zinc-500">{template.label} · {layout.width} × {layout.height}</span></div>
