@@ -1,7 +1,7 @@
 export const templates = {
-  classic: { label: "Classic", description: "The balanced RepoShot card.", accent: "#60a5fa", cardOpacity: 0.18, radius: "1.5rem" },
-  spotlight: { label: "Spotlight", description: "A bolder card with a stronger repository focus.", accent: "#a78bfa", cardOpacity: 0.24, radius: "2rem" },
-  minimal: { label: "Minimal", description: "A clean, restrained presentation for sharing.", accent: "#34d399", cardOpacity: 0.1, radius: "1rem" },
+  classic: { label: "Editorial", description: "Quiet type, strong hierarchy, built for clean project sharing.", accent: "#60a5fa", cardOpacity: 0.16, radius: "0.75rem" },
+  spotlight: { label: "Signal", description: "Higher contrast and stronger focus for a repository that needs attention.", accent: "#a78bfa", cardOpacity: 0.22, radius: "1rem" },
+  minimal: { label: "Mono", description: "The stripped-back version: less decoration, more repository.", accent: "#34d399", cardOpacity: 0.08, radius: "0.35rem" },
 } as const;
 
 export type TemplateName = keyof typeof templates;
