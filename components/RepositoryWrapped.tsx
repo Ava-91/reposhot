@@ -16,8 +16,12 @@ export default function RepositoryWrapped({ repository }: { repository: Reposito
 
 
   const cards = [
-    ["Stars", compact(repository.stars)], ["Forks", compact(repository.forks)], ["Open issues", compact(repository.openIssues)],
-    ["Repository age", age(repository.createdAt)], ["Primary language", repository.language || "Unknown"], ["Activity", activityLabel(repository.pushedAt)],
+    ["01 · The beginning", age(repository.createdAt), "How long this repository has been around."],
+    ["02 · The language", repository.language || "Unknown", "The primary language behind the project."],
+    ["03 · The crowd", compact(repository.stars), "Stars from people who found it worth saving."],
+    ["04 · The forks", compact(repository.forks), "Copies made by people building on the idea."],
+    ["05 · The pressure", compact(repository.openIssues), "Open issues still asking for attention."],
+    ["06 · Right now", activityLabel(repository.pushedAt), "The latest signal from the repository."],
   ];
   function download() { void exportPng(ref.current, createExportOptions(1080, 1350, repository.owner.login, `${repository.name}-wrapped`)); }
 
@@ -26,8 +30,8 @@ export default function RepositoryWrapped({ repository }: { repository: Reposito
       <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-fuchsia-500/15 blur-3xl" /><div className="absolute -bottom-28 -left-24 h-96 w-96 rounded-full bg-blue-500/15 blur-3xl" />
       <div className="relative flex h-full flex-col"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-zinc-500">RepoShot · Repository Wrapped</span>
         <div className="mt-10"><p className="text-sm font-medium text-blue-300">{repository.owner.login}</p><h1 className="mt-1 break-words text-4xl font-black tracking-tight sm:text-6xl">{repository.name}</h1><p className="mt-4 line-clamp-4 text-sm leading-6 text-zinc-400">{repository.description || "A public GitHub repository with a story to tell."}</p></div>
-        <div className="mt-8 space-y-3"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600">The story so far</p><div className="grid grid-cols-2 gap-3">{cards.map(([label, value], index) => <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><p className="text-[10px] uppercase tracking-wider text-zinc-600">{index + 1}. {label}</p><p className="mt-2 break-words text-lg font-bold sm:text-xl">{value}</p></div>)}</div></div>
-        <div className="mt-auto border-t border-white/10 pt-5"><p className="text-sm font-semibold text-zinc-200">{repository.topics.length ? `Top topics: ${repository.topics.slice(0, 4).join(" · ")}` : "No topics added yet."}</p><p className="mt-2 text-xs text-zinc-600">A six-chapter snapshot of this repository: what it is, how old it is, how much activity it has seen, and what the community looks like.</p></div>
+        <div className="mt-8 space-y-3"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600">The story so far</p><div className="grid grid-cols-2 gap-3">{cards.map(([label, value, caption]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><p className="text-[10px] uppercase tracking-wider text-zinc-600">{label}</p><p className="mt-2 break-words text-lg font-bold sm:text-xl">{value}</p><p className="mt-1 text-[10px] leading-4 text-zinc-600">{caption}</p></div>)}</div></div>
+        <div className="mt-auto border-t border-white/10 pt-5"><p className="text-sm font-semibold text-zinc-200">{repository.topics.length ? `Top topics: ${repository.topics.slice(0, 4).join(" · ")}` : "No topics added yet."}</p><p className="mt-2 text-xs text-zinc-600">Six chapters, one repository: from its beginning to the signal it is sending today.</p></div>
       </div>
     </div>
     <div className="mt-5 flex justify-center"><button type="button" onClick={download} disabled={downloading} className="min-h-11 rounded-xl bg-blue-500 px-6 text-sm font-semibold text-white transition hover:bg-blue-400 disabled:opacity-60">{downloading ? "Generating PNG..." : downloadComplete ? "✓ PNG downloaded" : "Download PNG"}</button></div>
