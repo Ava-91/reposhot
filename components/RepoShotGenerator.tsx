@@ -22,7 +22,7 @@ export default function RepoShotGenerator() {
           </button>
         ))}
       </div>
-      <div className="w-full max-w-2xl"><RepositoryInput onSubmit={(ref) => void loadRepository(ref)} disabled={loading} label={mode === "battle" ? "Repository A" : undefined} /></div>
+      <div className="w-full max-w-2xl"><RepositoryInput onSubmit={(ref) => void loadRepository(ref)} onExample={() => void loadRepository({ owner: "vercel", repo: "next.js" })} disabled={loading} label={mode === "battle" ? "Repository A" : undefined} /></div>
       {mode === "battle" && <><div className="my-2 font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-600" aria-hidden="true">vs</div><div className="w-full max-w-2xl"><RepositoryInput onSubmit={(ref) => void loadRepository(ref, true)} disabled={loading} label="Repository B" /></div></>}
       {loading && <div role="status" aria-live="polite" className="mt-6 font-mono text-xs text-zinc-500">Fetching repository information…</div>}
       {error && !loading && <div role="alert" className="mt-6 w-full max-w-2xl border-l-2 border-red-400 bg-red-400/[0.04] px-4 py-3 text-sm text-red-300">{error}</div>}

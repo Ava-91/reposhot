@@ -4,9 +4,9 @@ import { FormEvent, useState } from "react";
 import { parseGitHubRepositoryUrl, RepositoryReference } from "@/lib/github-url";
 
 export type Repository = RepositoryReference;
-interface RepositoryInputProps { onSubmit: (repository: Repository) => void; disabled?: boolean; label?: string; }
+interface RepositoryInputProps { onSubmit: (repository: Repository) => void; disabled?: boolean; label?: string; onExample?: () => void; }
 
-export default function RepositoryInput({ onSubmit, disabled = false, label = "Repository URL" }: RepositoryInputProps) {
+export default function RepositoryInput({ onSubmit, disabled = false, label = "Repository URL", onExample }: RepositoryInputProps) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -32,6 +32,7 @@ export default function RepositoryInput({ onSubmit, disabled = false, label = "R
           </div>
         </div>
         {error ? <p id="repository-error" role="alert" className="mt-3 text-sm text-red-400">{error}</p> : <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600">public repositories · PNG export</p>}
+        {onExample && <button type="button" onClick={onExample} disabled={disabled} className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-emerald-300 underline-offset-4 hover:underline disabled:opacity-50">Try an example →</button>}
       </form>
     </section>
   );
