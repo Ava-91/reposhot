@@ -9,7 +9,7 @@ interface PngExportOptions {
 async function elementToPngDataUrl(
   element: HTMLElement,
   { width, height, filename }: PngExportOptions,
-): Promise<void> {
+): Promise<string> {
   const dataUrl = await toPng(element, {
     width,
     height,
@@ -21,13 +21,7 @@ async function elementToPngDataUrl(
     },
   });
 
-  const link = document.createElement("a");
-  link.download = filename;
-  link.href = dataUrl;
-
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
+  return dataUrl;
 }
 
 export async function downloadElementAsPng(element: HTMLElement, options: PngExportOptions): Promise<void> {
