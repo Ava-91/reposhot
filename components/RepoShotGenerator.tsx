@@ -29,13 +29,19 @@ export default function RepoShotGenerator() {
       {mode === "battle" && repository && secondRepository && !loading && !error && <section className="mt-10 w-full" aria-label="Repository battle result"><RepositoryBattle left={repository} right={secondRepository} /></section>}
       {mode === "wrapped" && repository && !loading && !error && <section className="mt-10 w-full" aria-label="Repository Wrapped result"><RepositoryWrapped repository={repository} /></section>}
       {repository && showEditor && <section className="mt-10 w-full" aria-label="Repository preview editor">
-        <div className="mb-5 border-y border-white/10 py-4">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-mono text-xs uppercase tracking-[0.14em] text-white">Preview</h2><p className="mt-1 text-xs text-zinc-500">Configure the image, then export it.</p></div><ThemeSelector value={theme} onChange={setTheme} /></div>
-          <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 sm:flex-row sm:items-center sm:justify-between"><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">Layout</span><LayoutSelector value={layout} onChange={setLayout} /></div>
-          <MetadataControls value={metadata} onChange={setMetadata} />
+        <div className="mb-5">
+          <div className="mb-4 border-y border-white/10 py-4"><h2 className="font-mono text-xs uppercase tracking-[0.14em] text-white">Preview</h2><p className="mt-1 text-xs text-zinc-500">Your shareable image is ready. Refine it below if you want.</p></div>
+          <RepositoryPreview repository={repository} theme={theme} layout={layout} metadata={metadata} template={template} onTemplateChange={setTemplate} onShare={handleShare} />
+          {shareStatus && <p role="status" className="mt-3 text-center font-mono text-xs text-zinc-500">{shareStatus}</p>}
         </div>
-        <RepositoryPreview repository={repository} theme={theme} layout={layout} metadata={metadata} template={template} onTemplateChange={setTemplate} onShare={handleShare} />
-        {shareStatus && <p role="status" className="mt-3 text-center font-mono text-xs text-zinc-500">{shareStatus}</p>}
+        <details className="border-y border-white/10" open>
+          <summary className="cursor-pointer list-none px-1 py-4 font-mono text-xs uppercase tracking-[0.14em] text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70">Customize preview</summary>
+          <div className="border-t border-white/[0.06] py-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">Theme</p></div><ThemeSelector value={theme} onChange={setTheme} /></div>
+            <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 sm:flex-row sm:items-center sm:justify-between"><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">Layout</span><LayoutSelector value={layout} onChange={setLayout} /></div>
+            <div className="mt-4"><MetadataControls value={metadata} onChange={setMetadata} /></div>
+          </div>
+        </details>
       </section>}
       {!loading && !error && !repository && <div className="mt-8 w-full max-w-2xl border-y border-dashed border-white/10 px-1 py-8 text-left"><p className="font-mono text-xs uppercase tracking-[0.12em] text-zinc-300">Ready when you are.</p><p className="mt-2 text-sm leading-6 text-zinc-500">Paste a public GitHub repository URL above to generate a {mode === "battle" ? "comparison" : mode === "wrapped" ? "Wrapped summary" : "preview"}.</p></div>}
     </section>
