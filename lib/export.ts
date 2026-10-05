@@ -6,7 +6,7 @@ interface PngExportOptions {
   filename: string;
 }
 
-export async function downloadElementAsPng(
+async function elementToPngDataUrl(
   element: HTMLElement,
   { width, height, filename }: PngExportOptions,
 ): Promise<void> {
@@ -28,4 +28,22 @@ export async function downloadElementAsPng(
   document.body.appendChild(link);
   link.click();
   link.remove();
+}
+
+export async function downloadElementAsPng(element: HTMLElement, options: PngExportOptions): Promise<void> {
+  const dataUrl = await elementToPngDataUrl(element, options);
+  const link = document.createElement("a");
+  link.download = options.filename;
+  link.href = dataUrl;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+export async function copyElementAsPng(element: HTMLElement, options: PngExportOptions): Promise<void> {
+  if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") throw new Error("Image clipboard is unavailable in this browser.");
+  const dataUrl = await elementToPngDataUrl(element, options);
+  const response = await fetch(dataUrl);
+  const blob = await response.blob();
+  await navigator.clipboard.write([new ClipboardItem({ [blob.type || "image/png"]: blob })]);
 }
