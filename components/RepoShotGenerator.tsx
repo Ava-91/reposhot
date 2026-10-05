@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import LayoutSelector from "@/components/LayoutSelector";
 import MetadataControls from "@/components/MetadataControls";
 import RepositoryBattle from "@/components/RepositoryBattle";
@@ -10,7 +11,8 @@ import ThemeSelector from "@/components/ThemeSelector";
 import { useRepoShotGenerator } from "@/components/useRepoShotGenerator";
 
 export default function RepoShotGenerator() {
-  const { mode, repository, secondRepository, loading, error, shareStatus, theme, layout, template, metadata, setTheme, setLayout, setTemplate, setMetadata, loadRepository, switchMode, handleShare } = useRepoShotGenerator();
+  const { mode, repository, secondRepository, loading, error, shareStatus, theme, layout, template, metadata, setTheme, setLayout, setTemplate, setMetadata, loadRepository, switchMode, handleShare, clearError } = useRepoShotGenerator();
+  useEffect(() => { const onKeyDown = (event: KeyboardEvent) => { if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) return; if (event.key === "/" ) { event.preventDefault(); document.getElementById("repository-url")?.focus(); } else if (event.key === "1") switchMode("card"); else if (event.key === "2") switchMode("battle"); else if (event.key === "3") switchMode("wrapped"); else if (event.key === "Escape" && error) clearError(); }; window.addEventListener("keydown", onKeyDown); return () => window.removeEventListener("keydown", onKeyDown); }, [error, clearError, switchMode]);
   const showEditor = Boolean(repository && !loading && !error && mode === "card");
   return (
     <section className="flex w-full flex-col items-center">
