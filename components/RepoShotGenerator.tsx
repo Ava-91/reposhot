@@ -15,7 +15,7 @@ export default function RepoShotGenerator() {
   useEffect(() => { const onKeyDown = (event: KeyboardEvent) => { if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) return; if (event.key === "/" ) { event.preventDefault(); document.getElementById("repository-url")?.focus(); } else if (event.key === "1") switchMode("card"); else if (event.key === "2") switchMode("battle"); else if (event.key === "3") switchMode("wrapped"); else if (event.key === "Escape" && error) clearError(); }; window.addEventListener("keydown", onKeyDown); return () => window.removeEventListener("keydown", onKeyDown); }, [error, clearError, switchMode]);
   const showEditor = Boolean(repository && !loading && !error && mode === "card");
   return (
-    <section className="flex w-full flex-col items-center">
+    <section className="flex w-full flex-col items-center"><div className="mb-5 flex w-full max-w-2xl items-center gap-3" aria-hidden="true"><span className="h-px flex-1 bg-emerald-300/70"></span><span className="font-mono text-[9px] font-bold tracking-[0.18em] text-emerald-300">R/</span><span className="h-px flex-1 bg-white/10"></span></div>
       <div className="mb-6 grid w-full max-w-2xl grid-cols-3 border-y border-white/10" role="tablist" aria-label="RepoShot mode">
         {(["card", "battle", "wrapped"] as const).map((value) => (
           <button key={value} type="button" role="tab" aria-selected={mode === value} onClick={() => switchMode(value)}
