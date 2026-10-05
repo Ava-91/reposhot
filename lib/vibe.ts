@@ -1,6 +1,6 @@
 import type { RepositoryData } from "@/lib/repository-mapper";
 
-export type RepositoryVibe = "Alive" | "Questionable" | "Archaeological artifact";
+export type RepositoryVibe = "Serious" | "Experimental" | "Polished" | "Chaotic";
 export interface RepositoryVibeResult { label: RepositoryVibe; text: string; score: number; signals: { activity: number; community: number; maintenance: number; issuePressure: number; age: number }; }
 
 const DAY = 86_400_000;
@@ -16,8 +16,14 @@ export function getRepositoryVibe(repository: RepositoryData, now = Date.now()):
   const age = ageDays < 90 ? 80 : ageDays < 365 * 2 ? 55 : 30;
   const score = Math.round(activity * 0.35 + community * 0.2 + maintenance * 0.2 + issuePressure * 0.15 + age * 0.1);
 
-  if (days > 730) return { label: "Archaeological artifact", text: "The commit dust has settled.", score, signals: { activity, community, maintenance, issuePressure, age } };
-  if (repository.stars === 0 && repository.forks === 0) return { label: "Questionable", text: "Nobody has discovered this yet.", score, signals: { activity, community, maintenance, issuePressure, age } };
-  if (score >= 60) return { label: "Alive", text: "Fresh signals. The lights are on.", score, signals: { activity, community, maintenance, issuePressure, age } };
-  return { label: "Questionable", text: "Still around, just a little mysterious.", score, signals: { activity, community, maintenance, issuePressure, age } };
+  const chaoticSignal = Math.min(100, Math.round((100 - issuePressure) * 0.7 + (activity > 0 ? 20 : 0)));
+  const experimentalSignal = Math.min(100, Math.round((100 - community) * 0.55 + (ageDays < 365 ? 30 : 5)));
+  const polishedSignal = Math.min(100, Math.round(issuePressure * 0.5 + maintenance * 0.3 + community * 0.2));
+  const seriousSignal = Math.min(100, Math.round(community * 0.45 + age * 0.25 + maintenance * 0.3));
+  const signals = { activity, community, maintenance, issuePressure, age };
+
+  if (chaoticSignal >= 70 && chaoticSignal >= polishedSignal) return { label: "Chaotic", text: "Lots of moving parts. Delightfully unfinished.", score, signals };
+  if (experimentalSignal >= 65 && experimentalSignal >= seriousSignal) return { label: "Experimental", text: "Feels like someone is trying something new.", score, signals };
+  if (polishedSignal >= seriousSignal) return { label: "Polished", text: "The rough edges seem mostly under control.", score, signals };
+  return { label: "Serious", text: "A project with a more deliberate, established feel.", score, signals };
 }
