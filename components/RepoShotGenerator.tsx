@@ -31,7 +31,7 @@ export default function RepoShotGenerator() {
       {repository && showEditor && <section className="mt-10 w-full" aria-label="Repository preview editor">
         <div className="mb-5">
           <div className="mb-4 border-y border-white/10 py-4"><h2 className="font-mono text-xs uppercase tracking-[0.14em] text-white">Preview</h2><p className="mt-1 text-xs text-zinc-500">Your shareable image is ready. Refine it below if you want.</p></div>
-          <RepositoryPreview repository={repository} theme={theme} layout={layout} metadata={metadata} template={template} onTemplateChange={setTemplate} onShare={handleShare} />
+          <RepositoryPreview repository={repository} theme={theme} layout={layout} metadata={metadata} template={template} onTemplateChange={setTemplate} onShare={handleShare} shareStatus={shareStatus} />
           {shareStatus && <p role="status" className="mt-3 text-center font-mono text-xs text-zinc-500">{shareStatus}</p>}
         </div>
         <details className="border-y border-white/10" open>
