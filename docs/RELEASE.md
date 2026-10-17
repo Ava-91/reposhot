@@ -5,7 +5,7 @@
 - Production deployment: `https://reposhot.vercel.app/`
 - Package version: `0.1.0`
 - Default branch: `main`
-- Framework: Next.js 16.2.10
+- Framework: Next.js 16.3.4
 - Runtime target: Node.js 24-compatible
 
 ## Verification
