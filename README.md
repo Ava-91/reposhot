@@ -23,7 +23,13 @@
 
 ---
 
-## Preview\n\n![RepoShot generated card preview](https://raw.githubusercontent.com/Ava-91/reposhot/main/public/opengraph-image.svg)\n\nThe image above is the project’s generated social/card preview; the live editor can produce customized PNG cards from any public repository.\n\n## What is RepoShot?
+## Preview
+
+![RepoShot generated card preview](https://raw.githubusercontent.com/Ava-91/reposhot/main/public/opengraph-image.svg)
+
+The image above is the project’s generated social/card preview; the live editor can produce customized PNG cards from any public repository.
+
+## What is RepoShot?
 
 RepoShot is a focused web app for creating presentation-ready visuals from public GitHub repositories.
 
@@ -226,9 +232,9 @@ See [`docs/PNG_EXPORT.md`](docs/PNG_EXPORT.md).
 
 ## 🗺️ Project status
 
-RepoShot has moved beyond the original Next.js starter through its core workflow, customization, export and sharing, API caching, automated quality checks, UX polish, edge-case testing, and release-preparation phases.
+The current project version is **0.1.0**, with the core public-repository-to-PNG workflow, customization, preset sharing, API caching, and automated quality checks in place.
 
-The repository's GitHub Issues remain the source of truth for future improvements.
+RepoShot is an actively maintained early release rather than a finished, feature-complete product. Future improvements and known follow-up work are tracked in the [GitHub Issues](https://github.com/Ava-91/reposhot/issues). The release checklist and required CI checks are documented in [`docs/RELEASE.md`](docs/RELEASE.md).
 
 ---
 
