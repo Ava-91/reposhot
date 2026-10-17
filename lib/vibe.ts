@@ -22,9 +22,9 @@ export function getRepositoryVibe(repository: RepositoryData, now = Date.now()):
   const seriousSignal = Math.min(100, Math.round(community * 0.45 + age * 0.25 + maintenance * 0.3));
   const signals = { activity, community, maintenance, issuePressure, age };
 
-  if (days <= 30) return { label: "Alive", text: "This repository is alive and kicking.", score, signals };
   if (days > 730) return { label: "Archaeological artifact", text: "A little digital history, waiting to be rediscovered.", score, signals };
   if (repository.stars === 0 && repository.forks === 0) return { label: "Experimental", text: "Nobody has discovered this yet.", score, signals };
+  if (days <= 30) return { label: "Alive", text: "This repository is alive and kicking.", score, signals };
   if (chaoticSignal >= 70 && chaoticSignal >= polishedSignal) return { label: "Chaotic", text: "Lots of moving parts. Delightfully unfinished.", score, signals };
   if (experimentalSignal >= 65 && experimentalSignal >= seriousSignal) return { label: "Experimental", text: "Feels like someone is trying something new.", score, signals };
   if (polishedSignal >= seriousSignal) return { label: "Polished", text: "The rough edges seem mostly under control.", score, signals };
