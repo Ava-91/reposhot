@@ -7,10 +7,10 @@ export default function Home() {
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 sm:px-8 lg:px-10">
         <nav className="flex items-center justify-between border-b border-white/10 py-5">
           <div className="flex items-center gap-3"><span className="font-mono text-sm font-bold tracking-tight text-white">R/</span><span className="text-sm font-semibold tracking-tight text-zinc-100">RepoShot</span></div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">public beta</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400">public beta</span>
         </nav>
         <div className="flex flex-1 flex-col items-center"><Hero /><RepoShotGenerator /></div>
-        <footer className="mt-16 border-t border-white/10 py-5 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">RepoShot · repository snapshots for people who build things</footer>
+        <footer className="mt-16 border-t border-white/10 py-5 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">RepoShot · repository snapshots for people who build things</footer>
       </div>
     </main>
   );
