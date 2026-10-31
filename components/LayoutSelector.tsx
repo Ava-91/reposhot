@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { layouts, LayoutName } from "@/lib/layouts";
 
 interface LayoutSelectorProps {
@@ -28,7 +29,7 @@ export default function LayoutSelector({
               type="button"
               onClick={() => onChange(layoutName)}
               aria-pressed={selected}
-              aria-label={`${layout.label}, ${layout.width} by ${layout.height} pixels${selected ? ", selected" : ""}`}
+              aria-label={`${layout.label}, ${displayWidth} by ${displayHeight} pixels${selected ? ", selected" : ""}`}
               className={`min-h-11 rounded-xl border px-3 py-2 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70 ${
                 selected ? "border-blue-400/40 bg-blue-400/10 text-blue-300" : "border-white/10 bg-white/3 text-zinc-400 hover:bg-white/6 hover:text-zinc-200"
               }`}
@@ -43,11 +44,11 @@ export default function LayoutSelector({
         <div className="grid grid-cols-2 gap-3 border border-white/10 bg-white/[0.025] p-3">
           <label className="grid gap-1 text-xs text-zinc-400">
             Width (320–2400 px)
-            <input aria-label="Custom export width" type="number" min={320} max={2400} step={10} value={customWidth} onChange={(event) => onCustomWidthChange(Math.max(320, Math.min(2400, Number(event.target.value) || 320)))} className="min-h-10 border border-white/10 bg-zinc-950 px-3 text-sm text-zinc-200" />
+            <input aria-label="Custom export width" type="number" min={320} max={2400} step={10} value={widthDraft} onChange={(event) => setWidthDraft(event.target.value)} onBlur={commitWidth} onKeyDown={(event) => { if (event.key === "Enter") event.currentTarget.blur(); }} className="min-h-10 border border-white/10 bg-zinc-950 px-3 text-sm text-zinc-200" />
           </label>
           <label className="grid gap-1 text-xs text-zinc-400">
             Height (320–3200 px)
-            <input aria-label="Custom export height" type="number" min={320} max={3200} step={10} value={customHeight} onChange={(event) => onCustomHeightChange(Math.max(320, Math.min(3200, Number(event.target.value) || 320)))} className="min-h-10 border border-white/10 bg-zinc-950 px-3 text-sm text-zinc-200" />
+            <input aria-label="Custom export height" type="number" min={320} max={3200} step={10} value={heightDraft} onChange={(event) => setHeightDraft(event.target.value)} onBlur={commitHeight} onKeyDown={(event) => { if (event.key === "Enter") event.currentTarget.blur(); }} className="min-h-10 border border-white/10 bg-zinc-950 px-3 text-sm text-zinc-200" />
           </label>
         </div>
       )}
