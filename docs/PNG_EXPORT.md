@@ -20,6 +20,7 @@ The supported layouts are defined in `lib/layouts.ts`:
 - Landscape: 1200 × 675 px (16:9)
 - Square: 1080 × 1080 px (1:1)
 - Portrait: 1080 × 1350 px (4:5)
+- Story: 1080 × 1920 px (9:16)
 
 The export uses `pixelRatio: 1`, so the generated PNG dimensions match the selected effective layout.
 
