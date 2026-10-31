@@ -23,6 +23,11 @@ describe("adaptive layout", () => {
     assert.equal(getEffectiveLayout("landscape", metadata, dense), "square");
   });
 
+  it("does not override an explicitly selected portrait layout", () => {
+    const dense = { ...baseRepository, description: "A".repeat(400), topics: ["a", "b", "c", "d", "e", "f"] };
+    assert.equal(getEffectiveLayout("portrait", metadata, dense), "portrait");
+  });
+
   it("respects the selected layout when auto layout is disabled", () => {
     assert.equal(getEffectiveLayout("portrait", { ...metadata, adaptiveLayout: false }, baseRepository), "portrait");
   });
