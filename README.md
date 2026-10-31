@@ -51,14 +51,17 @@ The hosted version is the easiest way to try the app. A local development setup 
 
 - Public GitHub repository URL validation
 - Repository name, owner, avatar, description, language, stars, forks, and open issues
-- Repository topics with compact overflow handling
+- Repository topics with compact overflow handling and drag-to-reorder controls
+- Keyboard-accessible topic reordering
 - Graceful handling of missing optional metadata
 - Clear errors for invalid or nonexistent repositories
 - Helpful messaging for GitHub API rate limits
 
 ### Customization
 
-- Multiple visual themes, layouts, and reusable templates
+- Multiple visual themes and five templates: Editorial, Signal, Mono, Terminal, and Portfolio
+- Landscape (16:9), square (1:1), and portrait (4:5) export layouts
+- Content-aware adaptive layout for dense repository metadata
 - Metadata visibility controls
 - Custom subtitle and footer text
 - Accent color customization
@@ -80,6 +83,9 @@ The hosted version is the easiest way to try the app. A local development setup 
 - GitHub REST API
 - 60-second repository caching
 - In-flight request deduplication
+- Upstream request timeouts and a bounded retry for transient failures
+- Payload validation before repository data reaches the UI
+- Independent Battle requests with cancellation and stale-response protection
 - Automated lint, typecheck, test, and production-build checks
 
 ---
@@ -164,7 +170,7 @@ The same core checks run in GitHub Actions CI. See [`docs/DEVELOPMENT.md`](docs/
 
 ## 🧪 Testing
 
-RepoShot has automated coverage for deterministic behavior, including URL parsing, unusual repository names, long metadata, missing optional metadata, large counters, malformed topics, deterministic PNG options, nonexistent repositories, rate limits, and generic GitHub API failures.
+RepoShot has automated coverage for deterministic behavior, including URL parsing, repository payload validation, adaptive layout decisions, battle scoring and ties, unusual repository names, long metadata, missing optional metadata, large counters, malformed topics, deterministic PNG options, nonexistent repositories, rate limits, and generic GitHub API failures. Browser tests cover card generation, Battle mode, stale requests, accessibility, and export layouts.
 
 The manual release matrix covers browser PNG export, narrow/mobile layouts, and runtime remote-avatar failures.
 
@@ -218,7 +224,7 @@ See [`docs/GITHUB_API.md`](docs/GITHUB_API.md) for implementation details.
 
 ## 📦 Export details
 
-The generated image is a PNG using the selected layout dimensions. Filenames are deterministic and based on the repository owner and name.
+The generated image is a PNG using the selected layout dimensions: 1200 × 675 (16:9), 1080 × 1080 (1:1), or 1080 × 1350 (4:5). Filenames are deterministic and based on the repository owner and name.
 
 Example:
 
