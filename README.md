@@ -60,7 +60,7 @@ The hosted version is the easiest way to try the app. A local development setup 
 ### Customization
 
 - Multiple visual themes and five templates: Editorial, Signal, Mono, Terminal, and Portfolio
-- Landscape (16:9), square (1:1), portrait (4:5), and story (9:16) export layouts
+- Landscape (16:9), square (1:1), portrait (4:5), and story (9:16), and bounded custom-size export layouts
 - Content-aware adaptive layout for dense repository metadata
 - Metadata visibility controls
 - Custom subtitle and footer text
@@ -224,7 +224,7 @@ See [`docs/GITHUB_API.md`](docs/GITHUB_API.md) for implementation details.
 
 ## 📦 Export details
 
-The generated image is a PNG using the selected layout dimensions: 1200 × 675 (16:9), 1080 × 1080 (1:1), 1080 × 1350 (4:5), or 1080 × 1920 (9:16). Filenames are deterministic and based on the repository owner and name.
+The generated image is a PNG using the selected layout dimensions: 1200 × 675 (16:9), 1080 × 1080 (1:1), 1080 × 1350 (4:5), 1080 × 1920 (9:16), or a custom size from 320–2400 px wide and 320–3200 px tall. Filenames are deterministic and based on the repository owner and name.
 
 Example:
 
