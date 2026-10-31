@@ -18,6 +18,6 @@ export function getEffectiveLayout(
     + visibleStats * 24
     + metadata.subtitle.length;
 
-  if (textDensity > 300 || repository.topics.length > 5 || visibleStats >= 4) return "square";
+  if (textDensity > 300 || repository.topics.length > 5 || (visibleStats >= 4 && textDensity > 180)) return "square";
   return selected;
 }
