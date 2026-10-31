@@ -4,14 +4,15 @@ import { useRef } from "react";
 import type { RepositoryData } from "@/lib/repository-mapper";
 import { usePngExport } from "@/components/usePngExport";
 import { createExportOptions } from "@/lib/export-options";
+import { getBattleScore } from "@/lib/battle-score";
 
 function format(value: number) { return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value); }
-function age(date: string) { const days = Math.max(0, Math.floor((Date.now() - Date.parse(date)) / 86_400_000)); return days >= 365 ? `${Math.floor(days / 365)}y` : `${Math.max(1, Math.floor(days / 30))}mo`; }
+function age(date: string) { const timestamp = Date.parse(date); if (!Number.isFinite(timestamp)) return "—"; const days = Math.max(0, Math.floor((Date.now() - timestamp) / 86_400_000)); return days >= 365 ? `${Math.floor(days / 365)}y` : `${Math.max(1, Math.floor(days / 30))}mo`; }
 
 const metrics = [
-  ["Stars", (r: RepositoryData) => r.stars],
-  ["Forks", (r: RepositoryData) => r.forks],
-  ["Open issues", (r: RepositoryData) => r.openIssues],
+  ["Stars", (r: RepositoryData) => r.stars, true],
+  ["Forks", (r: RepositoryData) => r.forks, true],
+  ["Open issues", (r: RepositoryData) => r.openIssues, false],
 ] as const;
 
 export default function RepositoryBattle({ left, right }: { left: RepositoryData; right: RepositoryData }) {
@@ -20,8 +21,10 @@ export default function RepositoryBattle({ left, right }: { left: RepositoryData
 
 
 
-  const wins = metrics.reduce((count, [, get]) => count + (get(left) === get(right) ? 0 : get(left) > get(right) ? 1 : -1), 0);
-  const winner = wins === 0 ? null : wins > 0 ? left : right;
+  const score = getBattleScore(left, right);
+  const leftWins = score.leftWins;
+  const tiedMetrics = score.ties;
+  const winner = score.winner === "left" ? left : score.winner === "right" ? right : null;
 
   function download() { void exportPng(ref.current, createExportOptions(1200, 900, left.owner.login, `${left.name}-vs-${right.name}`)); }
 
@@ -29,11 +32,12 @@ export default function RepositoryBattle({ left, right }: { left: RepositoryData
     <div ref={ref} className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d10] p-7 text-white shadow-2xl sm:p-10" style={{ aspectRatio: "4 / 3" }}>
       <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-blue-500/15 blur-3xl" /><div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-violet-500/15 blur-3xl" />
       <div className="relative flex h-full flex-col">
-        <div className="flex items-center justify-between"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-zinc-500">RepoShot · Repository Battle</span><span className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-zinc-400">VS</span></div><p className="mt-3 text-xs text-zinc-500">{winner ? `${winner.name} leads on ${Math.abs(wins)} of ${metrics.length} metrics.` : "It’s a draw across the compared metrics."}</p>
+        <div className="flex items-center justify-between"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-zinc-500">RepoShot · Repository Battle</span><span className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-zinc-400">VS</span></div><p className="mt-3 text-xs text-zinc-500">{winner ? `${winner.name} leads on ${Math.max(leftWins, score.rightWins)} of ${metrics.length} metrics.` : `It’s a draw. ${tiedMetrics} metric${tiedMetrics === 1 ? "" : "s"} tied.`}</p>
+        <p className="mt-1 text-[10px] text-zinc-600">Stars and forks: higher is better. Open issues: fewer is better. This is a simple comparison, not a quality score.</p>
         <div className="mt-8 grid min-h-0 flex-1 grid-cols-2 gap-3 sm:gap-6">
-          {[left, right].map((repo, index) => <article key={repo.fullName} className={"min-w-0 rounded-2xl border bg-white/[0.035] p-4 sm:p-6 " + (winner?.fullName === repo.fullName ? "border-emerald-300/60" : "border-white/10")}>
+          {[left, right].map((repo) => <article key={repo.fullName} className={"min-w-0 rounded-2xl border bg-white/[0.035] p-4 sm:p-6 " + (winner?.fullName === repo.fullName ? "border-emerald-300/60" : "border-white/10")}>
             <div className="flex items-start justify-between gap-3"><div><p className="truncate text-xs font-medium text-blue-300">{repo.owner.login}</p><h2 className="mt-1 break-words text-lg font-bold sm:text-2xl">{repo.name}</h2></div>{winner?.fullName === repo.fullName && <span className="shrink-0 border border-emerald-300/40 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-emerald-300">Winner</span>}</div><p className="mt-2 line-clamp-3 text-xs leading-5 text-zinc-500 sm:text-sm">{repo.description || "No description provided."}</p>
-            <div className="mt-5 space-y-2">{metrics.map(([label, get]) => { const a = get(left); const b = get(right); const value = get(repo); const higher = value === Math.max(a, b) && a !== b; const lower = value === Math.min(a, b) && a !== b; const relation = a === b ? "Equal" : higher ? "Higher" : "Lower"; return <div key={label} className="rounded-xl border border-white/5 bg-black/20 p-3"><div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-zinc-600"><span>{label}</span><span className={higher ? "text-emerald-400" : lower ? "text-zinc-500" : "text-zinc-500"}>{relation}</span></div><p className="mt-1 text-sm font-semibold sm:text-base">{format(value)}</p></div>; })}</div>
+            <div className="mt-5 space-y-2">{metrics.map(([label, get, higherIsBetter]) => { const a = get(left); const b = get(right); const value = get(repo); const better = higherIsBetter ? value > (repo === left ? b : a) : value < (repo === left ? b : a); const relation = a === b ? "Equal" : better ? "Leads" : "Trails"; return <div key={label} className="rounded-xl border border-white/5 bg-black/20 p-3"><div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-zinc-600"><span>{label}</span><span className={better ? "text-emerald-400" : "text-zinc-500"}>{relation}</span></div><p className="mt-1 text-sm font-semibold sm:text-base">{format(value)}</p></div>; })}</div>
             <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] text-zinc-500"><span>Language: {repo.language || "—"}</span><span>Age: {age(repo.createdAt)}</span></div>
           </article>)}
         </div>
