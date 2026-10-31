@@ -1,6 +1,6 @@
 import type { MetadataVisibility } from "@/components/MetadataControls";
 import type { RepositoryData } from "@/lib/repository-mapper";
-import { layouts, type LayoutName } from "@/lib/layouts";
+import type { LayoutName } from "@/lib/layouts";
 
 export function getEffectiveLayout(
   selected: LayoutName,
