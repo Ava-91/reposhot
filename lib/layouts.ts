@@ -3,6 +3,7 @@ export const layouts = {
   square: { label: "Square", width: 1080, height: 1080, aspectRatio: "1 / 1" },
   portrait: { label: "Portrait", width: 1080, height: 1350, aspectRatio: "4 / 5" },
   story: { label: "Story", width: 1080, height: 1920, aspectRatio: "9 / 16" },
+  custom: { label: "Custom", width: 1200, height: 675, aspectRatio: "16 / 9" },
 } as const;
 
 export type LayoutName = keyof typeof layouts;
