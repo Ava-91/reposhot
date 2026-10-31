@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { RepositoryData } from "@/lib/repository-mapper";
 import { usePngExport } from "@/components/usePngExport";
 import { createExportOptions } from "@/lib/export-options";
+import { getBattleScore } from "@/lib/battle-score";
 
 function format(value: number) { return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value); }
 function age(date: string) { const days = Math.max(0, Math.floor((Date.now() - Date.parse(date)) / 86_400_000)); return days >= 365 ? `${Math.floor(days / 365)}y` : `${Math.max(1, Math.floor(days / 30))}mo`; }
@@ -20,10 +21,11 @@ export default function RepositoryBattle({ left, right }: { left: RepositoryData
 
 
 
-  const leftWins = metrics.filter(([, get, higherIsBetter]) => higherIsBetter ? get(left) > get(right) : get(left) < get(right)).length;
-  const rightWins = metrics.filter(([, get, higherIsBetter]) => higherIsBetter ? get(right) > get(left) : get(right) < get(left)).length;
-  const tiedMetrics = metrics.length - leftWins - rightWins;
-  const winner = leftWins === rightWins ? null : leftWins > rightWins ? left : right;
+  const score = getBattleScore(left, right);
+  const leftWins = score.leftWins;
+  const rightWins = score.rightWins;
+  const tiedMetrics = score.ties;
+  const winner = score.winner === "left" ? left : score.winner === "right" ? right : null;
 
   function download() { void exportPng(ref.current, createExportOptions(1200, 900, left.owner.login, `${left.name}-vs-${right.name}`)); }
 
