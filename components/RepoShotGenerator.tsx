@@ -11,7 +11,7 @@ import ThemeSelector from "@/components/ThemeSelector";
 import { useRepoShotGenerator } from "@/components/useRepoShotGenerator";
 
 export default function RepoShotGenerator() {
-  const { mode, repository, secondRepository, loading, loadingPrimary, loadingSecondary, error, shareStatus, theme, layout, template, metadata, setTheme, setLayout, setTemplate, setMetadata, loadRepository, switchMode, handleShare, clearError } = useRepoShotGenerator();
+  const { mode, repository, secondRepository, loading, loadingPrimary, loadingSecondary, error, shareStatus, theme, layout, customWidth, customHeight, template, metadata, setTheme, setLayout, setCustomWidth, setCustomHeight, setTemplate, setMetadata, loadRepository, switchMode, handleShare, clearError } = useRepoShotGenerator();
   useEffect(() => { const onKeyDown = (event: KeyboardEvent) => { if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) return; if (event.key === "/" ) { event.preventDefault(); document.querySelector<HTMLInputElement>("[data-repository-input]")?.focus(); } else if (event.key === "1") switchMode("card"); else if (event.key === "2") switchMode("battle"); else if (event.key === "3") switchMode("wrapped"); else if (event.key === "Escape" && error) clearError(); }; window.addEventListener("keydown", onKeyDown); return () => window.removeEventListener("keydown", onKeyDown); }, [error, clearError, switchMode]);
   const showEditor = Boolean(repository && !loading && !error && mode === "card");
   return (
@@ -33,14 +33,14 @@ export default function RepoShotGenerator() {
       {repository && showEditor && <section className="mt-10 w-full" aria-label="Repository preview editor">
         <div className="mb-5">
           <div className="mb-4 border-y border-white/10 py-4"><h2 className="font-mono text-xs uppercase tracking-[0.14em] text-white">Preview</h2><p className="mt-1 text-xs text-zinc-400">Your shareable image is ready. Refine it below if you want.</p></div>
-          <RepositoryPreview repository={repository} theme={theme} layout={layout} metadata={metadata} template={template} onTemplateChange={setTemplate} onShare={handleShare} shareStatus={shareStatus} />
+          <RepositoryPreview repository={repository} theme={theme} layout={layout} customWidth={customWidth} customHeight={customHeight} metadata={metadata} template={template} onTemplateChange={setTemplate} onShare={handleShare} shareStatus={shareStatus} />
           {shareStatus && <p role="status" className="mt-3 text-center font-mono text-xs text-zinc-400">{shareStatus}</p>}
         </div>
         <details className="border-y border-white/10" open>
           <summary className="cursor-pointer list-none px-1 py-4 font-mono text-xs uppercase tracking-[0.14em] text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70">Customize preview</summary>
           <div className="border-t border-white/[0.06] py-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">Theme</p></div><ThemeSelector value={theme} onChange={setTheme} /></div>
-            <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 sm:flex-row sm:items-center sm:justify-between"><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">Layout</span><LayoutSelector value={layout} onChange={setLayout} customWidth={1200} customHeight={675} onCustomWidthChange={() => undefined} onCustomHeightChange={() => undefined} /></div>
+            <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 sm:flex-row sm:items-center sm:justify-between"><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">Layout</span><LayoutSelector value={layout} onChange={setLayout} customWidth={customWidth} customHeight={customHeight} onCustomWidthChange={setCustomWidth} onCustomHeightChange={setCustomHeight} /></div>
             <div className="mt-4"><MetadataControls value={metadata} onChange={setMetadata} /></div>
           </div>
         </details>
