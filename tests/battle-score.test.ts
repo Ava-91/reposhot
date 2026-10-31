@@ -22,7 +22,7 @@ describe("repository battle scoring", () => {
   it("reports a draw when wins are equal", () => {
     const score = getBattleScore(
       { stars: 100, forks: 2, openIssues: 4 },
-      { stars: 50, forks: 8, openIssues: 1 },
+      { stars: 50, forks: 8, openIssues: 4 },
     );
     assert.equal(score.winner, null);
     assert.equal(score.leftWins, score.rightWins);
