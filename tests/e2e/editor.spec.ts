@@ -37,4 +37,5 @@ test("layout options include landscape, square, and portrait exports", async ({ 
   await expect(page.getByRole("button", { name: /Landscape/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /Square/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /Portrait/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Story/ })).toBeVisible();
 });
