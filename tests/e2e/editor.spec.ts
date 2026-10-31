@@ -38,4 +38,8 @@ test("layout options include landscape, square, and portrait exports", async ({ 
   await expect(page.getByRole("button", { name: /Square/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /Portrait/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /Story/ })).toBeVisible();
+  await page.getByRole("button", { name: /Custom/ }).click();
+  await page.getByRole("spinbutton", { name: "Custom export width" }).fill("1400");
+  await page.getByRole("spinbutton", { name: "Custom export height" }).fill("800");
+  await expect(page.getByText("Custom · 1400 × 800")).toBeVisible();
 });
