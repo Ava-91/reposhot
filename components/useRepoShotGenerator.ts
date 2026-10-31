@@ -24,6 +24,8 @@ export function useRepoShotGenerator() {
   const [shareStatus, setShareStatus] = useState("");
   const [theme, setTheme] = useState<ThemeName>(defaultTheme);
   const [layout, setLayout] = useState<LayoutName>(defaultLayout);
+  const [customWidth, setCustomWidth] = useState(1200);
+  const [customHeight, setCustomHeight] = useState(675);
   const [template, setTemplate] = useState<TemplateName>(defaultTemplate);
   const [metadata, setMetadata] = useState<MetadataVisibility>(defaultMetadataVisibility);
   const controllers = useRef<Record<RepositorySlot, AbortController | null>>({ primary: null, secondary: null });
@@ -121,8 +123,8 @@ export function useRepoShotGenerator() {
     mode, repository, secondRepository,
     loading: loadingPrimary || loadingSecondary,
     loadingPrimary, loadingSecondary,
-    error, shareStatus, theme, layout, template, metadata,
-    setTheme, setLayout, setTemplate, setMetadata, loadRepository,
+    error, shareStatus, theme, layout, customWidth, customHeight, template, metadata,
+    setTheme, setLayout, setCustomWidth, setCustomHeight, setTemplate, setMetadata, loadRepository,
     switchMode, handleShare, clearError,
   };
 }
