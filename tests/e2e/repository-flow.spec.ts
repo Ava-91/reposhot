@@ -54,7 +54,11 @@ test("loads both repositories independently in battle mode", async ({ page }) =>
 test("does not show a stale card after switching modes during a request", async ({ page }) => {
   await page.route("**/api/repository**", async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 250));
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(repositoryPayload("stale")) });
+    try {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(repositoryPayload("stale")) });
+    } catch {
+      // The browser may already have cancelled this request after the mode switch.
+    }
   });
 
   await page.goto("/");
