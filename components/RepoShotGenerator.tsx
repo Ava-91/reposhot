@@ -40,7 +40,7 @@ export default function RepoShotGenerator() {
           <summary className="cursor-pointer list-none px-1 py-4 font-mono text-xs uppercase tracking-[0.14em] text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70">Customize preview</summary>
           <div className="border-t border-white/[0.06] py-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">Theme</p></div><ThemeSelector value={theme} onChange={setTheme} /></div>
-            <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 sm:flex-row sm:items-center sm:justify-between"><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">Layout</span><LayoutSelector value={layout} onChange={setLayout} /></div>
+            <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 sm:flex-row sm:items-center sm:justify-between"><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400">Layout</span><LayoutSelector value={layout} onChange={setLayout} customWidth={1200} customHeight={675} onCustomWidthChange={() => undefined} onCustomHeightChange={() => undefined} /></div>
             <div className="mt-4"><MetadataControls value={metadata} onChange={setMetadata} /></div>
           </div>
         </details>
