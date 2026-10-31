@@ -7,7 +7,8 @@ import { createExportOptions } from "@/lib/export-options";
 
 function compact(value: number) { return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value); }
 function age(createdAt: string) { const days = Math.max(0, Math.floor((Date.now() - Date.parse(createdAt)) / 86_400_000)); return days >= 365 ? `${Math.floor(days / 365)} years` : `${Math.max(1, Math.floor(days / 30))} months`; }
-function activityLabel(pushedAt: string | null) { if (!pushedAt) return "No recent activity"; const days = Math.floor((Date.now() - Date.parse(pushedAt)) / 86_400_000); return days <= 7 ? "Active this week" : days <= 30 ? "Active this month" : days <= 180 ? "Active this season" : "Taking a break"; }
+function activityLabel(pushedAt: string | null) { if (!pushedAt) return "No recent activity"; const timestamp = Date.parse(pushedAt); if (!Number.isFinite(timestamp)) return "Activity date unavailable"; const days = Math.floor((Date.now() - timestamp) / 86_400_000); return days <= 7 ? "Active this week" : days <= 30 ? "Active this month" : days <= 180 ? "Active this season" : "Taking a break"; }
+function dateLabel(value: string | null) { if (!value || !Number.isFinite(Date.parse(value))) return "Unknown"; return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(value)); }
 
 export default function RepositoryWrapped({ repository }: { repository: RepositoryData }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -22,6 +23,8 @@ export default function RepositoryWrapped({ repository }: { repository: Reposito
     ["04 · The forks", compact(repository.forks), "Copies made by people building on the idea."],
     ["05 · The pressure", compact(repository.openIssues), "Open issues still asking for attention."],
     ["06 · Right now", activityLabel(repository.pushedAt), "The latest signal from the repository."],
+    ["07 · Last push", dateLabel(repository.pushedAt), "The most recent push date exposed by GitHub."],
+    ["08 · The map", compact(repository.topics.length), "Topics used to describe this project."],
   ];
   function download() { void exportPng(ref.current, createExportOptions(1080, 1350, repository.owner.login, `${repository.name}-wrapped`)); }
 
@@ -31,7 +34,7 @@ export default function RepositoryWrapped({ repository }: { repository: Reposito
       <div className="relative flex h-full flex-col"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-zinc-500">RepoShot · Repository Wrapped</span>
         <div className="mt-10"><p className="text-sm font-medium text-blue-300">{repository.owner.login}</p><h1 className="mt-1 break-words text-4xl font-black tracking-tight sm:text-6xl">{repository.name}</h1><p className="mt-4 line-clamp-4 text-sm leading-6 text-zinc-400">{repository.description || "A public GitHub repository with a story to tell."}</p></div>
         <div className="mt-8 space-y-3"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600">The story so far</p><div className="grid grid-cols-2 gap-3">{cards.map(([label, value, caption]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><p className="text-[10px] uppercase tracking-wider text-zinc-600">{label}</p><p className="mt-2 break-words text-lg font-bold sm:text-xl">{value}</p><p className="mt-1 text-[10px] leading-4 text-zinc-600">{caption}</p></div>)}</div></div>
-        <div className="mt-auto border-t border-white/10 pt-5"><p className="text-sm font-semibold text-zinc-200">{repository.topics.length ? `Top topics: ${repository.topics.slice(0, 4).join(" · ")}` : "No topics added yet."}</p><p className="mt-2 text-xs text-zinc-600">Six chapters, one repository: from its beginning to the signal it is sending today.</p></div>
+        <div className="mt-auto border-t border-white/10 pt-5"><p className="text-sm font-semibold text-zinc-200">{repository.topics.length ? `Top topics: ${repository.topics.slice(0, 4).join(" · ")}` : "No topics added yet."}</p><p className="mt-2 text-xs text-zinc-600">Eight snapshots, one repository. Based only on public GitHub metadata; no commit history or private analytics are inferred.</p></div>
       </div>
     </div>
     <div className="mt-5 flex justify-center"><button type="button" onClick={download} disabled={downloading} className="min-h-11 rounded-xl bg-blue-500 px-6 text-sm font-semibold text-white transition hover:bg-blue-400 disabled:opacity-60">{downloading ? "Generating PNG..." : downloadComplete ? "✓ PNG downloaded" : "Download PNG"}</button></div>
