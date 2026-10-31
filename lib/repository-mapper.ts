@@ -36,7 +36,43 @@ export interface GitHubRepositoryPayload {
   owner: { login: string; avatar_url?: string | null };
 }
 
+function isNonNegativeNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+function isDate(value: unknown): value is string {
+  return typeof value === "string" && Number.isFinite(Date.parse(value));
+}
+
+export function isGitHubRepositoryPayload(value: unknown): value is GitHubRepositoryPayload {
+  if (!value || typeof value !== "object") return false;
+  const data = value as Record<string, unknown>;
+  const owner = data.owner as Record<string, unknown> | null;
+  const license = data.license as Record<string, unknown> | null;
+  return typeof data.name === "string"
+    && typeof data.full_name === "string"
+    && (data.description === null || typeof data.description === "string")
+    && typeof data.html_url === "string"
+    && (data.homepage === null || typeof data.homepage === "string")
+    && (data.language === null || typeof data.language === "string")
+    && (data.topics === undefined || (Array.isArray(data.topics) && data.topics.every((topic) => typeof topic === "string")))
+    && isNonNegativeNumber(data.stargazers_count)
+    && isNonNegativeNumber(data.forks_count)
+    && isNonNegativeNumber(data.subscribers_count)
+    && isNonNegativeNumber(data.open_issues_count)
+    && (data.license === null || Boolean(license && (license.spdx_id === null || typeof license.spdx_id === "string")))
+    && isDate(data.created_at)
+    && isDate(data.updated_at)
+    && (data.pushed_at === undefined || data.pushed_at === null || isDate(data.pushed_at))
+    && Boolean(owner && typeof owner.login === "string")
+    && (!owner || owner.avatar_url === undefined || owner.avatar_url === null || typeof owner.avatar_url === "string");
+}
+
 export function mapGitHubRepository(data: GitHubRepositoryPayload): RepositoryData {
+  if (!isGitHubRepositoryPayload(data)) {
+    throw new Error("GitHub returned repository data in an unexpected format.");
+  }
+
   return {
     name: data.name,
     fullName: data.full_name,
