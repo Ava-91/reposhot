@@ -5,19 +5,29 @@ export const runtime = "nodejs";
 
 const CACHE_TTL_MS = 60_000;
 const REQUEST_TIMEOUT_MS = 8_000;
+const MAX_CACHE_ENTRIES = 500;
 const cache = new Map<string, { value: ReturnType<typeof mapGitHubRepository>; expiresAt: number }>();
 const inFlight = new Map<string, Promise<ReturnType<typeof mapGitHubRepository>>>();
 const REPOSITORY_PART = /^[A-Za-z0-9_.-]{1,100}$/;
 
 async function fetchRepository(owner: string, repo: string) {
-  const response = await fetch(
-    `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
-    {
-      headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      cache: "no-store",
-    },
-  );
+  let response: Response | undefined;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      response = await fetch(
+        `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
+        {
+          headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
+          signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+          cache: "no-store",
+        },
+      );
+      if (response.status < 500 || attempt === 1) break;
+    } catch (error) {
+      if (attempt === 1) throw error;
+    }
+  }
+  if (!response) throw new Error("GitHub is temporarily unavailable. Please try again.");
 
   if (!response.ok) {
     const remaining = response.headers.get("x-ratelimit-remaining");
@@ -54,6 +64,11 @@ export async function GET(request: NextRequest) {
     requestPromise = fetchRepository(owner, repo)
       .then((value) => {
         cache.set(key, { value, expiresAt: Date.now() + CACHE_TTL_MS });
+        if (cache.size > MAX_CACHE_ENTRIES) {
+          for (const [cachedKey, entry] of cache) {
+            if (entry.expiresAt <= Date.now() || cache.size > MAX_CACHE_ENTRIES) cache.delete(cachedKey);
+          }
+        }
         return value;
       })
       .finally(() => inFlight.delete(key));
