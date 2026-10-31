@@ -15,6 +15,20 @@ interface LayoutSelectorProps {
 export default function LayoutSelector({
   value, onChange, customWidth, customHeight, onCustomWidthChange, onCustomHeightChange,
 }: LayoutSelectorProps) {
+  const [widthDraft, setWidthDraft] = useState(String(customWidth));
+  const [heightDraft, setHeightDraft] = useState(String(customHeight));
+
+  const commitWidth = () => {
+    const next = Math.max(320, Math.min(2400, Number(widthDraft) || 320));
+    setWidthDraft(String(next));
+    onCustomWidthChange(next);
+  };
+  const commitHeight = () => {
+    const next = Math.max(320, Math.min(3200, Number(heightDraft) || 320));
+    setHeightDraft(String(next));
+    onCustomHeightChange(next);
+  };
+
   return (
     <div className="flex w-full flex-col gap-3 sm:w-auto" aria-label="Screenshot layout" role="group">
       <div className="flex w-full flex-wrap items-center gap-2">
