@@ -21,12 +21,13 @@ The supported layouts are defined in `lib/layouts.ts`:
 - Square: 1080 × 1080 px (1:1)
 - Portrait: 1080 × 1350 px (4:5)
 - Story: 1080 × 1920 px (9:16)
+- Custom: width 320–2400 px and height 320–3200 px
 
 The export uses `pixelRatio: 1`, so the generated PNG dimensions match the selected effective layout.
 
 ## Adaptive layout
 
-When Auto layout is enabled, RepoShot uses a deterministic content-density heuristic to choose a square layout for dense repository content. Otherwise, the selected layout is preserved. Disable Auto layout to keep the selected dimensions regardless of metadata density.
+When Auto layout is enabled, RepoShot uses a deterministic content-density heuristic to choose a square layout for dense repository content only when Landscape is selected. Explicit Square, Portrait, Story, and Custom choices are preserved. Custom dimensions are bounded to 320–2400 px wide and 320–3200 px tall.
 
 ## Editing before export
 
