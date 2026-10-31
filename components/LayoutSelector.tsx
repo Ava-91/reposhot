@@ -20,6 +20,8 @@ export default function LayoutSelector({
         {Object.entries(layouts).map(([name, layout]) => {
           const layoutName = name as LayoutName;
           const selected = value === layoutName;
+          const displayWidth = layoutName === "custom" ? customWidth : layout.width;
+          const displayHeight = layoutName === "custom" ? customHeight : layout.height;
           return (
             <button
               key={layoutName}
@@ -32,7 +34,7 @@ export default function LayoutSelector({
               }`}
             >
               <span className="block text-xs font-semibold">{layout.label}</span>
-              <span className="mt-0.5 block text-[10px] text-zinc-500">{layout.width} × {layout.height}</span>
+              <span className="mt-0.5 block text-[10px] text-zinc-500">{displayWidth} × {displayHeight}</span>
             </button>
           );
         })}
