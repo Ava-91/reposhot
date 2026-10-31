@@ -8,6 +8,7 @@ import { RepositoryData } from "@/lib/github";
 import { usePngExport } from "@/components/usePngExport";
 import { createExportOptions } from "@/lib/export-options";
 import { LayoutName, layouts } from "@/lib/layouts";
+import { getEffectiveLayout } from "@/lib/adaptive-layout";
 import { TemplateName, templates } from "@/lib/templates";
 import { ThemeName, themes } from "@/lib/themes";
 import { getRepositoryVibe } from "@/lib/vibe";
@@ -21,7 +22,7 @@ export default function RepositoryPreview({ repository, theme: themeName, layout
   const previewRef = useRef<HTMLDivElement>(null); const { busy: downloading, done: downloadComplete, copied: copyComplete, error: downloadError, download: exportPng, copy: copyPng } = usePngExport();
   const [avatarSrc, setAvatarSrc] = useState(() => createAvatarFallback(repository.owner.login));
   useEffect(() => { if (!repository.owner.avatarUrl) return; let cancelled = false; fetch(repository.owner.avatarUrl, { mode: "cors" }).then((response) => { if (!response.ok) throw new Error("Avatar request failed"); return response.blob(); }).then((blob) => new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Avatar conversion failed")); reader.onerror = () => reject(reader.error ?? new Error("Avatar conversion failed")); reader.readAsDataURL(blob); })).then((dataUrl) => { if (!cancelled) setAvatarSrc(dataUrl); }).catch(() => undefined); return () => { cancelled = true; }; }, [repository.owner.avatarUrl]);
-  const theme = themes[themeName]; const layout = layouts[layoutName]; const template = templates[templateName]; const visibleTopics = repository.topics.slice(0, 4); const remainingTopicCount = Math.max(repository.topics.length - visibleTopics.length, 0); const accent = metadata.accentColor || theme.accent || template.accent; const subtitle = metadata.subtitle.trim(); const footerText = safeText(metadata.footerText, "Public repository"); const vibe = metadata.showVibe ? getRepositoryVibe(repository) : null;
+  const theme = themes[themeName]; const effectiveLayout = getEffectiveLayout(layoutName, metadata, repository); const layout = layouts[effectiveLayout]; const template = templates[templateName]; const visibleTopics = repository.topics.slice(0, 4); const remainingTopicCount = Math.max(repository.topics.length - visibleTopics.length, 0); const accent = metadata.accentColor || theme.accent || template.accent; const subtitle = metadata.subtitle.trim(); const footerText = safeText(metadata.footerText, "Public repository"); const vibe = metadata.showVibe ? getRepositoryVibe(repository) : null;
   function handleDownload() { void exportPng(previewRef.current, createExportOptions(layout.width, layout.height, repository.owner.login, repository.name)); }
   function handleCopyImage() { void copyPng(previewRef.current, createExportOptions(layout.width, layout.height, repository.owner.login, repository.name)); }
 
