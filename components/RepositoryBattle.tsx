@@ -7,7 +7,7 @@ import { createExportOptions } from "@/lib/export-options";
 import { getBattleScore } from "@/lib/battle-score";
 
 function format(value: number) { return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value); }
-function age(date: string) { const days = Math.max(0, Math.floor((Date.now() - Date.parse(date)) / 86_400_000)); return days >= 365 ? `${Math.floor(days / 365)}y` : `${Math.max(1, Math.floor(days / 30))}mo`; }
+function age(date: string) { const timestamp = Date.parse(date); if (!Number.isFinite(timestamp)) return "—"; const days = Math.max(0, Math.floor((Date.now() - timestamp) / 86_400_000)); return days >= 365 ? `${Math.floor(days / 365)}y` : `${Math.max(1, Math.floor(days / 30))}mo`; }
 
 const metrics = [
   ["Stars", (r: RepositoryData) => r.stars, true],
@@ -23,7 +23,6 @@ export default function RepositoryBattle({ left, right }: { left: RepositoryData
 
   const score = getBattleScore(left, right);
   const leftWins = score.leftWins;
-  const rightWins = score.rightWins;
   const tiedMetrics = score.ties;
   const winner = score.winner === "left" ? left : score.winner === "right" ? right : null;
 
@@ -35,7 +34,7 @@ export default function RepositoryBattle({ left, right }: { left: RepositoryData
       <div className="relative flex h-full flex-col">
         <div className="flex items-center justify-between"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-zinc-500">RepoShot · Repository Battle</span><span className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-zinc-400">VS</span></div><p className="mt-3 text-xs text-zinc-500">{winner ? `${winner.name} leads on ${Math.max(leftWins, rightWins)} of ${metrics.length} metrics.` : `It’s a draw. ${tiedMetrics} metric${tiedMetrics === 1 ? "" : "s"} tied.`}</p>
         <div className="mt-8 grid min-h-0 flex-1 grid-cols-2 gap-3 sm:gap-6">
-          {[left, right].map((repo, index) => <article key={repo.fullName} className={"min-w-0 rounded-2xl border bg-white/[0.035] p-4 sm:p-6 " + (winner?.fullName === repo.fullName ? "border-emerald-300/60" : "border-white/10")}>
+          {[left, right].map((repo) => <article key={repo.fullName} className={"min-w-0 rounded-2xl border bg-white/[0.035] p-4 sm:p-6 " + (winner?.fullName === repo.fullName ? "border-emerald-300/60" : "border-white/10")}>
             <div className="flex items-start justify-between gap-3"><div><p className="truncate text-xs font-medium text-blue-300">{repo.owner.login}</p><h2 className="mt-1 break-words text-lg font-bold sm:text-2xl">{repo.name}</h2></div>{winner?.fullName === repo.fullName && <span className="shrink-0 border border-emerald-300/40 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-emerald-300">Winner</span>}</div><p className="mt-2 line-clamp-3 text-xs leading-5 text-zinc-500 sm:text-sm">{repo.description || "No description provided."}</p>
             <div className="mt-5 space-y-2">{metrics.map(([label, get, higherIsBetter]) => { const a = get(left); const b = get(right); const value = get(repo); const better = higherIsBetter ? value > (repo === left ? b : a) : value < (repo === left ? b : a); const relation = a === b ? "Equal" : better ? "Leads" : "Trails"; return <div key={label} className="rounded-xl border border-white/5 bg-black/20 p-3"><div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-zinc-600"><span>{label}</span><span className={better ? "text-emerald-400" : "text-zinc-500"}>{relation}</span></div><p className="mt-1 text-sm font-semibold sm:text-base">{format(value)}</p></div>; })}</div>
             <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] text-zinc-500"><span>Language: {repo.language || "—"}</span><span>Age: {age(repo.createdAt)}</span></div>
