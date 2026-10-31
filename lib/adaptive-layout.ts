@@ -7,7 +7,7 @@ export function getEffectiveLayout(
   metadata: MetadataVisibility,
   repository: RepositoryData,
 ): LayoutName {
-  if (!metadata.adaptiveLayout) return selected;
+  if (!metadata.adaptiveLayout || selected !== "landscape") return selected;
 
   const visibleStats = Number(metadata.language && Boolean(repository.language))
     + Number(metadata.stars)
@@ -18,6 +18,6 @@ export function getEffectiveLayout(
     + visibleStats * 24
     + metadata.subtitle.length;
 
-  if (textDensity > 300 || repository.topics.length > 5 || (visibleStats >= 4 && textDensity > 180)) return "square";
+  if (textDensity > 300 || repository.topics.length > 5) return "square";
   return selected;
 }
