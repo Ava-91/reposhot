@@ -83,10 +83,11 @@ export function useRepoShotGenerator() {
       setMetadata(preset.metadata);
       void loadRepository({ owner: preset.owner, repo: preset.repo });
     });
-    return () => {
-      controllers.current.primary?.abort();
-      controllers.current.secondary?.abort();
-    };
+  }, []);
+
+  useEffect(() => () => {
+    controllers.current.primary?.abort();
+    controllers.current.secondary?.abort();
   }, []);
 
   function switchMode(next: Mode) {
