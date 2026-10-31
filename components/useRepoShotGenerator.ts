@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getRepository, type RepositoryData } from "@/lib/github";
 import { defaultLayout, layouts, type LayoutName } from "@/lib/layouts";
 import { decodePreset, encodePreset } from "@/lib/preset";
@@ -35,7 +35,7 @@ export function useRepoShotGenerator() {
     requestIds.current[slot] += 1;
   }
 
-  async function loadRepository(ref: { owner: string; repo: string }, secondary = false) {
+  const loadRepository = useCallback(async (ref: { owner: string; repo: string }, secondary = false) => {
     const slot: RepositorySlot = secondary ? "secondary" : "primary";
     abortSlot(slot);
     const requestId = requestIds.current[slot];
@@ -66,7 +66,7 @@ export function useRepoShotGenerator() {
         controllers.current[slot] = null;
       }
     }
-  }
+  }, []);
 
   useEffect(() => {
     const value = new URLSearchParams(window.location.search).get("preset");
@@ -83,7 +83,7 @@ export function useRepoShotGenerator() {
       setMetadata(preset.metadata);
       void loadRepository({ owner: preset.owner, repo: preset.repo });
     });
-  }, []);
+  }, [loadRepository]);
 
   useEffect(() => () => {
     controllers.current.primary?.abort();
