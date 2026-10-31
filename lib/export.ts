@@ -8,7 +8,7 @@ interface PngExportOptions {
 
 async function elementToPngDataUrl(
   element: HTMLElement,
-  { width, height, filename }: PngExportOptions,
+  { width, height }: PngExportOptions,
 ): Promise<string> {
   const dataUrl = await toPng(element, {
     width,
