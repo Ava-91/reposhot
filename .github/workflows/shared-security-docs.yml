@@ -10,8 +10,8 @@ permissions:
 
 jobs:
   security:
-    uses: Ava-91/Ava-91/.github/workflows/reusable-security.yml@automation/reusable-workflow-inputs
+    uses: Ava-91/Ava-91/.github/workflows/reusable-security.yml@main
   docs:
-    uses: Ava-91/Ava-91/.github/workflows/reusable-docs.yml@automation/reusable-workflow-inputs
+    uses: Ava-91/Ava-91/.github/workflows/reusable-docs.yml@main
     with:
       paths: "./README.md"
