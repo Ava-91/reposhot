@@ -1,0 +1,17 @@
+name: Shared security and documentation checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    uses: Ava-91/Ava-91/.github/workflows/reusable-security.yml@automation/reusable-workflow-inputs
+  docs:
+    uses: Ava-91/Ava-91/.github/workflows/reusable-docs.yml@automation/reusable-workflow-inputs
+    with:
+      paths: "./README.md"
